@@ -905,3 +905,1386 @@
 .user-detail-close-button:pressed {
     -fx-background-color: #4A2E20;
 }
+
+/* =========================================================
+   IMPORT RECEIPT
+   ========================================================= */
+
+.import-card {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 12;
+    -fx-border-color: #E6D8C3;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(39, 22, 14, 0.08),
+            12,
+            0.15,
+            0,
+            4
+    );
+}
+
+.section-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27160E;
+}
+
+.subsection-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A4030;
+}
+
+.field-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7C6856;
+}
+
+.import-book-pane {
+    -fx-background-color: #F8F3EB;
+    -fx-background-radius: 10;
+    -fx-border-color: #E6D8C3;
+    -fx-border-radius: 10;
+    -fx-padding: 18;
+}
+
+.readonly-field {
+    -fx-background-color: #EEE5D8;
+    -fx-text-fill: #5A4030;
+    -fx-opacity: 1;
+}
+
+.selection-list {
+    -fx-background-color: #FFFDF9;
+    -fx-border-color: #DCCBB6;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+}
+
+.selection-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5A4030;
+    -fx-padding: 7 10;
+}
+
+.selection-list .list-cell:hover {
+    -fx-background-color: #F0E6D8;
+}
+
+.selection-list .list-cell:selected {
+    -fx-background-color: #E9D8BF;
+    -fx-text-fill: #27160E;
+}
+
+.vintage-separator {
+    -fx-background-color: #E6D8C3;
+}
+
+.import-total-box {
+    -fx-background-color: #F0E6D8;
+    -fx-background-radius: 8;
+    -fx-padding: 14 18;
+}
+
+.import-total-label {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7C6856;
+}
+
+.import-total-value {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8A5A20;
+}
+
+.dialog-note {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8B7662;
+    -fx-wrap-text: true;
+}
+
+.type-radio {
+    -fx-text-fill: #5A4030;
+    -fx-font-size: 13px;
+}
+
+.type-radio .radio {
+    -fx-border-color: #C5A059;
+}
+
+.type-radio:selected .dot {
+    -fx-background-color: #8A5A20;
+}
+        /* =========================================================
+           ADD NEW AUTHOR / CATEGORY DIALOG
+           ========================================================= */
+
+    .dialog-pane {
+    -fx-background-color: #F8F3EB;
+    -fx-background-radius: 16;
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-padding: 0;
+}
+
+    /* =========================================================
+       DIALOG HEADER
+       ========================================================= */
+
+    .dialog-header {
+        -fx-background-color: #27160E;
+        -fx-background-radius: 16 16 0 0;
+        -fx-padding: 20 24 18 24;
+    }
+
+    .dialog-title {
+        -fx-font-family: "Georgia";
+        -fx-font-size: 22px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #F0E6D8;
+    }
+
+    .dialog-subtitle {
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 12px;
+        -fx-text-fill: #C9B8A5;
+    }
+
+    /* =========================================================
+       FORM AREA
+       ========================================================= */
+
+    .dialog-form {
+        -fx-background-color: #F8F3EB;
+        -fx-padding: 24;
+    }
+
+    .dialog-field-label {
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 12px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #5A4030;
+    }
+
+    /* =========================================================
+       TEXT FIELD
+       ========================================================= */
+
+    .dialog-text-field {
+        -fx-background-color: #FFFDF9;
+        -fx-background-radius: 8;
+        -fx-border-color: #D8C8B4;
+        -fx-border-width: 1;
+        -fx-border-radius: 8;
+        -fx-padding: 10 12;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 13px;
+        -fx-text-fill: #3E2B21;
+    }
+
+    .dialog-text-field:hover {
+        -fx-border-color: #C5A059;
+    }
+
+    .dialog-text-field:focused {
+        -fx-border-color: #A47F3A;
+        -fx-border-width: 1.5;
+        -fx-background-color: #FFFFFF;
+    }
+
+    /* =========================================================
+       TEXT AREA
+       ========================================================= */
+
+    .dialog-text-area {
+        -fx-background-color: #FFFDF9;
+        -fx-background-radius: 8;
+        -fx-border-color: #D8C8B4;
+        -fx-border-width: 1;
+        -fx-border-radius: 8;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 13px;
+        -fx-text-fill: #3E2B21;
+    }
+
+    .dialog-text-area .content {
+        -fx-background-color: #FFFDF9;
+        -fx-background-radius: 8;
+    }
+
+    .dialog-text-area:hover {
+        -fx-border-color: #C5A059;
+    }
+
+    .dialog-text-area:focused {
+        -fx-border-color: #A47F3A;
+        -fx-border-width: 1.5;
+    }
+
+    /* =========================================================
+       COMBO BOX
+       ========================================================= */
+
+    .dialog-combo-box {
+        -fx-background-color: #FFFDF9;
+        -fx-background-radius: 8;
+        -fx-border-color: #D8C8B4;
+        -fx-border-width: 1;
+        -fx-border-radius: 8;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 13px;
+        -fx-text-fill: #3E2B21;
+    }
+
+    .dialog-combo-box:hover {
+        -fx-border-color: #C5A059;
+    }
+
+    .dialog-combo-box:focused {
+        -fx-border-color: #A47F3A;
+        -fx-border-width: 1.5;
+    }
+
+    .dialog-combo-box .list-cell {
+        -fx-background-color: #FFFDF9;
+        -fx-text-fill: #3E2B21;
+        -fx-padding: 8 10;
+    }
+
+    .dialog-combo-box .list-cell:hover {
+        -fx-background-color: #F0E6D8;
+    }
+
+    .dialog-combo-box .list-cell:selected {
+        -fx-background-color: #E8D8BD;
+        -fx-text-fill: #27160E;
+    }
+
+    /* =========================================================
+       DIALOG BUTTON AREA
+       ========================================================= */
+
+    .dialog-button-area {
+        -fx-background-color: #F0E6D8;
+        -fx-background-radius: 0 0 16 16;
+        -fx-padding: 16 24 20 24;
+    }
+
+    /* =========================================================
+       CANCEL BUTTON
+       ========================================================= */
+
+    .dialog-cancel-button {
+        -fx-background-color: transparent;
+        -fx-border-color: #B9A38B;
+        -fx-border-width: 1;
+        -fx-border-radius: 8;
+        -fx-background-radius: 8;
+        -fx-padding: 9 18;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 12px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #6B5545;
+        -fx-cursor: hand;
+    }
+
+    .dialog-cancel-button:hover {
+        -fx-background-color: #E7DCCF;
+        -fx-border-color: #8F735B;
+        -fx-text-fill: #3E2B21;
+    }
+
+    /* =========================================================
+       PRIMARY / ADD BUTTON
+       ========================================================= */
+
+    .dialog-primary-button {
+        -fx-background-color: #7A4E2D;
+        -fx-background-radius: 8;
+        -fx-border-radius: 8;
+        -fx-padding: 9 20;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 12px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #FFF9F0;
+        -fx-cursor: hand;
+    }
+
+    .dialog-primary-button:hover {
+        -fx-background-color: #925F36;
+    }
+
+    .dialog-primary-button:pressed {
+        -fx-background-color: #5F3B22;
+    }
+
+    /* =========================================================
+       ADD NEW AUTHOR / CATEGORY BUTTON
+       ========================================================= */
+
+    .add-new-dialog-button {
+        -fx-background-color: transparent;
+        -fx-border-color: transparent;
+        -fx-padding: 5 0;
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 12px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #8A682F;
+        -fx-cursor: hand;
+    }
+
+    .add-new-dialog-button:hover {
+        -fx-text-fill: #B08A42;
+        -fx-underline: true;
+    }
+
+    /* =========================================================
+       VALIDATION ERROR
+       ========================================================= */
+
+    .dialog-error-label {
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 11px;
+        -fx-text-fill: #9B3D32;
+        -fx-padding: 2 0 0 2;
+    }
+
+    /* =========================================================
+       SUCCESS MESSAGE
+       ========================================================= */
+
+    .dialog-success-label {
+        -fx-font-family: "Segoe UI";
+        -fx-font-size: 11px;
+        -fx-text-fill: #557044;
+        -fx-padding: 2 0 0 2;
+    }
+
+       /* =========================================================
+          ADD AUTHOR / ADD CATEGORY DIALOG
+          ========================================================= */
+
+       /* ---------------------------------------------------------
+          ROOT DIALOG
+          --------------------------------------------------------- */
+
+   .custom-dialog-pane {
+       -fx-background-color: #F8F3EB;
+       -fx-border-color: #C5A059;
+       -fx-border-width: 1;
+       -fx-border-radius: 16;
+       -fx-background-radius: 16;
+       -fx-padding: 0;
+   }
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
+.dialog-header {
+    -fx-background-color: #27160E;
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 22 26 20 26;
+}
+
+.dialog-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #F0E6D8;
+}
+
+.dialog-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #C9B8A5;
+}
+
+/* ---------------------------------------------------------
+   CONTENT
+   --------------------------------------------------------- */
+
+.dialog-content {
+    -fx-background-color: #F8F3EB;
+    -fx-background-radius: 16;
+}
+
+.dialog-form {
+    -fx-background-color: #F8F3EB;
+    -fx-padding: 24 26 26 26;
+}
+
+/* ---------------------------------------------------------
+   LABEL
+   --------------------------------------------------------- */
+
+.dialog-form .field-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A4030;
+}
+
+/* ---------------------------------------------------------
+   TEXT FIELD
+   --------------------------------------------------------- */
+
+.dialog-text-field {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8;
+    -fx-border-color: #D8C8B4;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+
+    -fx-padding: 10 12;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: #3E2B21;
+    -fx-prompt-text-fill: #A99988;
+}
+
+.dialog-text-field:hover {
+    -fx-border-color: #C5A059;
+}
+
+.dialog-text-field:focused {
+    -fx-border-color: #A47F3A;
+    -fx-border-width: 1.5;
+    -fx-background-color: #FFFFFF;
+}
+
+/* ---------------------------------------------------------
+   TEXT AREA
+   --------------------------------------------------------- */
+
+.dialog-text-area {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8;
+    -fx-border-color: #D8C8B4;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: #3E2B21;
+    -fx-prompt-text-fill: #A99988;
+}
+
+.dialog-text-area .content {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8;
+}
+
+.dialog-text-area:hover {
+    -fx-border-color: #C5A059;
+}
+
+.dialog-text-area:focused {
+    -fx-border-color: #A47F3A;
+    -fx-border-width: 1.5;
+}
+
+/* ---------------------------------------------------------
+   NOTE
+   --------------------------------------------------------- */
+
+.dialog-note {
+    -fx-background-color: #F0E6D8;
+    -fx-background-radius: 8;
+
+    -fx-border-color: #E0D0BB;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+
+    -fx-padding: 11 13;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-text-fill: #7C6856;
+}
+
+/* ---------------------------------------------------------
+   BUTTON BAR
+   --------------------------------------------------------- */
+
+.custom-dialog-pane .button-bar {
+    -fx-background-color: #F0E6D8;
+    -fx-padding: 14 22 18 22;
+}
+
+.custom-dialog-pane .button-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* ---------------------------------------------------------
+   CANCEL
+   --------------------------------------------------------- */
+
+.dialog-cancel-button {
+    -fx-background-color: transparent;
+
+    -fx-border-color: #B9A38B;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+
+    -fx-padding: 9 18;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #6B5545;
+
+    -fx-cursor: hand;
+}
+
+.dialog-cancel-button:hover {
+    -fx-background-color: #E7DCCF;
+    -fx-border-color: #8F735B;
+    -fx-text-fill: #3E2B21;
+}
+
+.dialog-cancel-button:pressed {
+    -fx-background-color: #D8C8B4;
+}
+
+/* ---------------------------------------------------------
+   ADD / PRIMARY
+   --------------------------------------------------------- */
+
+.dialog-primary-button {
+    -fx-background-color: #7A4E2D;
+
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-padding: 9 20;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #FFF9F0;
+
+    -fx-cursor: hand;
+}
+
+.dialog-primary-button:hover {
+    -fx-background-color: #925F36;
+}
+
+.dialog-primary-button:pressed {
+    -fx-background-color: #5F3B22;
+}
+
+/* ---------------------------------------------------------
+   DIALOG FOCUS
+   --------------------------------------------------------- */
+
+.custom-dialog-pane:focused {
+    -fx-border-color: #C5A059;
+}
+
+/* ---------------------------------------------------------
+   SCROLLBAR
+   --------------------------------------------------------- */
+
+.dialog-text-area .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.dialog-text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #C5A059;
+    -fx-background-radius: 5;
+}
+
+/* =========================================================
+   IMPORT RECEIPT - DIALOGS
+   ========================================================= */
+
+.import-dialog-pane {
+    -fx-background-color: #F8F3EB;
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.2px;
+    -fx-border-radius: 14px;
+    -fx-background-radius: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(39, 22, 14, 0.22), 18, 0.2, 0, 5);
+}
+
+/* ---------- HEADER ---------- */
+
+.import-dialog-pane .header-panel {
+    -fx-background-color: #27160E;
+    -fx-padding: 18px 22px 16px 22px;
+    -fx-background-radius: 13px 13px 0 0;
+}
+
+.import-dialog-pane .header-panel .label {
+    -fx-text-fill: #F0E6D8;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+/* ---------- CONTENT ---------- */
+
+.import-dialog-pane > .content {
+    -fx-background-color: #F8F3EB;
+    -fx-padding: 20px 22px 20px 22px;
+}
+
+.import-dialog-content {
+    -fx-background-color: #F8F3EB;
+}
+
+/* Label của Name / Biography / Category Name */
+
+.import-dialog-content .field-label {
+    -fx-text-fill: #5A4030;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* ---------- TEXT FIELD ---------- */
+
+.import-dialog-field {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8px;
+    -fx-border-color: #D8C8B5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 9px 12px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #3F2B20;
+}
+
+.import-dialog-field:hover {
+    -fx-border-color: #C5A059;
+}
+
+.import-dialog-field:focused {
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.5px;
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(197, 160, 89, 0.20),
+            8,
+            0.2,
+            0,
+            1
+    );
+}
+
+/* ---------- TEXT AREA ---------- */
+
+.import-dialog-textarea {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8px;
+    -fx-border-color: #D8C8B5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #3F2B20;
+}
+
+.import-dialog-textarea .content {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8px;
+}
+
+.import-dialog-textarea:focused {
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.5px;
+}
+
+/* ---------- NOTE ---------- */
+
+.import-dialog-note {
+    -fx-background-color: #F0E6D8;
+    -fx-border-color: #E1D1BD;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+
+    -fx-padding: 10px 12px;
+
+    -fx-text-fill: #7C6856;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+/* ---------- BUTTON BAR ---------- */
+
+.import-dialog-pane .button-bar {
+    -fx-background-color: #F0E6D8;
+    -fx-padding: 12px 18px 14px 18px;
+    -fx-background-radius: 0 0 13px 13px;
+}
+
+.import-dialog-pane .button-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* ---------- CREATE / CONFIRM BUTTON ---------- */
+
+.import-dialog-primary {
+    -fx-background-color: #C5A059;
+    -fx-text-fill: #27160E;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 9px 18px;
+
+    -fx-background-radius: 7px;
+    -fx-border-radius: 7px;
+
+    -fx-cursor: hand;
+}
+
+.import-dialog-primary:hover {
+    -fx-background-color: #D4B16D;
+}
+
+.import-dialog-primary:pressed {
+    -fx-background-color: #B18D4D;
+}
+
+/* ---------- CANCEL BUTTON ---------- */
+
+.import-dialog-cancel {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6F5948;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 9px 18px;
+
+    -fx-border-color: #CDBBA6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+
+    -fx-cursor: hand;
+}
+
+.import-dialog-cancel:hover {
+    -fx-background-color: #E8DDCF;
+    -fx-border-color: #A99078;
+}
+
+/* =========================================================
+   CUSTOM IMPORT DIALOG
+   ========================================================= */
+
+.custom-dialog-pane,
+.import-dialog-pane {
+    -fx-background-color: #F8F3EB;
+
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.2px;
+    -fx-border-radius: 14px;
+    -fx-background-radius: 14px;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(39, 22, 14, 0.25),
+            20,
+            0.2,
+            0,
+            5
+    );
+}
+
+/* =========================================================
+   DIALOG HEADER
+   ========================================================= */
+
+.custom-dialog-pane .dialog-header,
+.import-dialog-pane .dialog-header {
+    -fx-padding: 2px 0 4px 0;
+}
+
+.custom-dialog-pane .dialog-title,
+.import-dialog-pane .dialog-title {
+    -fx-text-fill: #27160E;
+
+    -fx-font-family: "Georgia";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.custom-dialog-pane .dialog-subtitle,
+.import-dialog-pane .dialog-subtitle {
+    -fx-text-fill: #7C6856;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12.5px;
+}
+
+/* =========================================================
+   DIALOG CONTENT
+   ========================================================= */
+
+.custom-dialog-pane .dialog-content,
+.import-dialog-pane .dialog-content {
+    -fx-background-color: #F8F3EB;
+
+    -fx-padding: 22px;
+}
+
+.custom-dialog-pane .dialog-form,
+.import-dialog-pane .dialog-form {
+    -fx-background-color: transparent;
+}
+
+/* =========================================================
+   FIELD LABEL
+   ========================================================= */
+
+.custom-dialog-pane .field-label,
+.import-dialog-pane .field-label {
+    -fx-text-fill: #5A4030;
+
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* =========================================================
+   TEXT FIELD
+   ========================================================= */
+
+.dialog-text-field {
+    -fx-background-color: #FFFDF9;
+
+    -fx-border-color: #D8C8B5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+
+    -fx-background-radius: 8px;
+
+    -fx-padding: 10px 12px;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: #3F2B20;
+
+    -fx-prompt-text-fill: #A89583;
+}
+
+.dialog-text-field:hover {
+    -fx-border-color: #C5A059;
+}
+
+.dialog-text-field:focused {
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.5px;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(197, 160, 89, 0.22),
+            8,
+            0.2,
+            0,
+            1
+    );
+}
+
+/* =========================================================
+   TEXT AREA
+   ========================================================= */
+
+.dialog-text-area {
+    -fx-background-color: #FFFDF9;
+
+    -fx-border-color: #D8C8B5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+
+    -fx-background-radius: 8px;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: #3F2B20;
+
+    -fx-prompt-text-fill: #A89583;
+}
+
+.dialog-text-area .content {
+    -fx-background-color: #FFFDF9;
+    -fx-background-radius: 8px;
+}
+
+.dialog-text-area:hover {
+    -fx-border-color: #C5A059;
+}
+
+.dialog-text-area:focused {
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.5px;
+}
+
+/* =========================================================
+   CATEGORY NOTE
+   ========================================================= */
+
+.dialog-note {
+    -fx-background-color: #F0E6D8;
+
+    -fx-border-color: #E1D1BD;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+
+    -fx-background-radius: 8px;
+
+    -fx-padding: 11px 13px;
+
+    -fx-text-fill: #7C6856;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+/* =========================================================
+   DIALOG BUTTON BAR
+   ========================================================= */
+
+.custom-dialog-pane .button-bar,
+.import-dialog-pane .button-bar {
+    -fx-background-color: #F0E6D8;
+
+    -fx-padding: 12px 18px 14px 18px;
+
+    -fx-background-radius: 0 0 13px 13px;
+}
+
+.custom-dialog-pane .button-bar .container,
+.import-dialog-pane .button-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.dialog-primary-button {
+    -fx-background-color: #C5A059;
+
+    -fx-text-fill: #27160E;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 9px 18px;
+
+    -fx-background-radius: 7px;
+    -fx-border-radius: 7px;
+
+    -fx-cursor: hand;
+}
+
+.dialog-primary-button:hover {
+    -fx-background-color: #D4B16D;
+}
+
+.dialog-primary-button:pressed {
+    -fx-background-color: #B18D4D;
+}
+
+/* =========================================================
+   CANCEL BUTTON
+   ========================================================= */
+
+.dialog-cancel-button {
+    -fx-background-color: transparent;
+
+    -fx-text-fill: #6F5948;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 9px 18px;
+
+    -fx-border-color: #CDBBA6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+
+    -fx-background-radius: 7px;
+
+    -fx-cursor: hand;
+}
+
+.dialog-cancel-button:hover {
+    -fx-background-color: #E8DDCF;
+    -fx-border-color: #A99078;
+}
+
+
+/* =========================================================
+   CONFIRM IMPORT ALERT
+   ========================================================= */
+
+.import-confirm-dialog {
+    -fx-background-color: #F8F3EB;
+
+    -fx-border-color: #C5A059;
+    -fx-border-width: 1.2px;
+    -fx-border-radius: 14px;
+
+    -fx-background-radius: 14px;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(39, 22, 14, 0.28),
+            20,
+            0.2,
+            0,
+            5
+    );
+}
+
+/* Header của Alert */
+
+.import-confirm-dialog .header-panel {
+    -fx-background-color: #27160E;
+
+    -fx-padding: 20px 22px 18px 22px;
+
+    -fx-background-radius: 13px 13px 0 0;
+}
+
+.import-confirm-dialog .header-panel .label {
+    -fx-text-fill: #F0E6D8;
+
+    -fx-font-family: "Georgia";
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+/* Nội dung Alert */
+
+.import-confirm-dialog > .content {
+    -fx-background-color: #F8F3EB;
+
+    -fx-padding: 22px;
+}
+
+.import-confirm-dialog > .content.label {
+    -fx-text-fill: #5A4030;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+
+    -fx-wrap-text: true;
+}
+
+/* Button bar */
+
+.import-confirm-dialog .button-bar {
+    -fx-background-color: #F0E6D8;
+
+    -fx-padding: 12px 18px 14px 18px;
+
+    -fx-background-radius: 0 0 13px 13px;
+}
+
+.import-confirm-dialog .button-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* OK */
+
+.import-confirm-dialog .button-bar .button {
+    -fx-background-color: #C5A059;
+
+    -fx-text-fill: #27160E;
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 9px 20px;
+
+    -fx-background-radius: 7px;
+    -fx-border-radius: 7px;
+
+    -fx-cursor: hand;
+}
+
+.import-confirm-dialog .button-bar .button:hover {
+    -fx-background-color: #D4B16D;
+}
+
+/* Cancel */
+
+.import-confirm-dialog .button-bar .button:cancel {
+    -fx-background-color: transparent;
+
+    -fx-text-fill: #6F5948;
+
+    -fx-border-color: #CDBBA6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+
+    -fx-background-radius: 7px;
+}
+
+.import-confirm-dialog .button-bar .button:cancel:hover {
+    -fx-background-color: #E8DDCF;
+}
+       /* =========================================================
+          ADMIN REVENUE DASHBOARD
+          ========================================================= */
+
+   .revenue-section {
+       -fx-background-color: #F0E6D8;
+       -fx-border-color: #E0CEB7;
+       -fx-border-width: 1;
+       -fx-background-radius: 14;
+       -fx-border-radius: 14;
+       -fx-padding: 22;
+   }
+
+/* ---------------------------------------------------------
+   REVENUE HEADER
+   --------------------------------------------------------- */
+
+.revenue-section-title {
+    -fx-text-fill: #27160E;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+}
+
+.revenue-section-subtitle {
+    -fx-text-fill: #7C6856;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12.5px;
+}
+
+.revenue-period-title {
+    -fx-text-fill: #8B6A3E;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1.2px;
+    -fx-padding: 4 0 0 2;
+}
+
+/* ---------------------------------------------------------
+   REVENUE CARDS
+   --------------------------------------------------------- */
+
+.revenue-card {
+    -fx-background-color: #F8F3EB;
+    -fx-border-color: #E2D2BD;
+    -fx-border-width: 1;
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+    -fx-padding: 15 17 14 17;
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(39, 22, 14, 0.08),
+            8,
+            0.15,
+            0,
+            2
+    );
+}
+
+.revenue-card:hover {
+    -fx-border-color: #C5A059;
+    -fx-background-color: #FBF7F0;
+}
+
+/* Total */
+
+.revenue-card-total {
+    -fx-background-color: #27160E;
+    -fx-border-color: #C5A059;
+}
+
+.revenue-card-total:hover {
+    -fx-background-color: #342016;
+}
+
+.revenue-card-total .revenue-card-label {
+    -fx-text-fill: #D8C4A9;
+}
+
+.revenue-card-total .revenue-card-value {
+    -fx-text-fill: #E0C27B;
+}
+
+/* Fine */
+
+.revenue-card-fine {
+    -fx-border-color: #CDB79D;
+}
+
+/* Reader */
+
+.revenue-card-reader {
+    -fx-border-color: #CDB79D;
+}
+
+/* Renewal */
+
+.revenue-card-renewal {
+    -fx-border-color: #CDB79D;
+}
+
+/* ---------------------------------------------------------
+   CARD TEXT
+   --------------------------------------------------------- */
+
+.revenue-card-label {
+    -fx-text-fill: #7C6856;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.revenue-card-value {
+    -fx-text-fill: #3A2418;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+}
+
+/* ---------------------------------------------------------
+   BREAKDOWN
+   --------------------------------------------------------- */
+
+.revenue-breakdown {
+    -fx-background-color: #F8F3EB;
+    -fx-border-color: #E2D2BD;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 16 18 15 18;
+}
+
+.revenue-breakdown-title {
+    -fx-text-fill: #27160E;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 5 0;
+}
+
+.revenue-row-label {
+    -fx-text-fill: #6F5A48;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12.5px;
+}
+
+.revenue-row-value {
+    -fx-text-fill: #4B3224;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.revenue-total-label {
+    -fx-text-fill: #27160E;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.revenue-total-value {
+    -fx-text-fill: #8B6A3E;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+/* =========================================================
+   DASHBOARD SCROLL PANE
+   ========================================================= */
+
+.dashboard-scroll-pane {
+    -fx-background-color: #F8F3EB;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll-pane > .viewport {
+    -fx-background-color: #F8F3EB;
+}
+
+/* Vertical scrollbar */
+.dashboard-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 2 4 2 2;
+}
+
+.dashboard-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #E6D8C3;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.dashboard-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #C5A059;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.dashboard-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #A98543;
+}
+
+/* Hide scrollbar arrows */
+.dashboard-scroll-pane .scroll-bar:vertical .increment-button,
+.dashboard-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll-pane .scroll-bar:vertical .increment-arrow,
+.dashboard-scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* Horizontal scrollbar - hide */
+.dashboard-scroll-pane .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+/* Remove corner between scrollbars */
+.dashboard-scroll-pane .corner {
+    -fx-background-color: #F8F3EB;
+}

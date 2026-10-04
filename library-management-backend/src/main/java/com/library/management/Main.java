@@ -6,6 +6,7 @@ import com.library.management.service.AuthService;
 import com.library.management.service.PasswordService;
 import com.library.management.view.LoginView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -29,6 +30,10 @@ public class Main extends Application {
                 new LoginView(authService);
 
         loginView.show(stage);
+
+        Platform.runLater(() -> {
+            stage.setMaximized(true);
+        });
     }
 
     @Override

@@ -18,8 +18,22 @@ public class DashboardResponse {
 
     private long todayReturns;
 
-    // Tổng doanh thu = tiền phạt + phí gia hạn
+    // ==============================
+    // DOANH THU HÔM NAY
+    // ==============================
+
+    private long todayFineRevenue;
+    private long todayRenewalRevenue;
+    private long todayLibraryCardRevenue;
     private long todayRevenue;
+
+    // ==============================
+    // DOANH THU THÁNG NÀY
+    // ==============================
+
+    private long monthlyFineRevenue;
+    private long monthlyRenewalRevenue;
+    private long monthlyLibraryCardRevenue;
     private long monthlyRevenue;
 
     public DashboardResponse() {
@@ -39,7 +53,15 @@ public class DashboardResponse {
             long activeUsers,
             long inactiveUsers,
             long todayReturns,
+
+            long todayFineRevenue,
+            long todayRenewalRevenue,
+            long todayLibraryCardRevenue,
             long todayRevenue,
+
+            long monthlyFineRevenue,
+            long monthlyRenewalRevenue,
+            long monthlyLibraryCardRevenue,
             long monthlyRevenue) {
 
         this.totalBooks = totalBooks;
@@ -57,9 +79,21 @@ public class DashboardResponse {
         this.inactiveUsers = inactiveUsers;
 
         this.todayReturns = todayReturns;
+
+        this.todayFineRevenue = todayFineRevenue;
+        this.todayRenewalRevenue = todayRenewalRevenue;
+        this.todayLibraryCardRevenue = todayLibraryCardRevenue;
         this.todayRevenue = todayRevenue;
+
+        this.monthlyFineRevenue = monthlyFineRevenue;
+        this.monthlyRenewalRevenue = monthlyRenewalRevenue;
+        this.monthlyLibraryCardRevenue = monthlyLibraryCardRevenue;
         this.monthlyRevenue = monthlyRevenue;
     }
+
+    // ==============================
+    // GENERAL STATISTICS
+    // ==============================
 
     public long getTotalBooks() {
         return totalBooks;
@@ -165,12 +199,68 @@ public class DashboardResponse {
         this.todayReturns = todayReturns;
     }
 
+    // ==============================
+    // TODAY REVENUE
+    // ==============================
+
+    public long getTodayFineRevenue() {
+        return todayFineRevenue;
+    }
+
+    public void setTodayFineRevenue(long todayFineRevenue) {
+        this.todayFineRevenue = todayFineRevenue;
+    }
+
+    public long getTodayRenewalRevenue() {
+        return todayRenewalRevenue;
+    }
+
+    public void setTodayRenewalRevenue(long todayRenewalRevenue) {
+        this.todayRenewalRevenue = todayRenewalRevenue;
+    }
+
+    public long getTodayLibraryCardRevenue() {
+        return todayLibraryCardRevenue;
+    }
+
+    public void setTodayLibraryCardRevenue(long todayLibraryCardRevenue) {
+        this.todayLibraryCardRevenue = todayLibraryCardRevenue;
+    }
+
     public long getTodayRevenue() {
         return todayRevenue;
     }
 
     public void setTodayRevenue(long todayRevenue) {
         this.todayRevenue = todayRevenue;
+    }
+
+    // ==============================
+    // MONTHLY REVENUE
+    // ==============================
+
+    public long getMonthlyFineRevenue() {
+        return monthlyFineRevenue;
+    }
+
+    public void setMonthlyFineRevenue(long monthlyFineRevenue) {
+        this.monthlyFineRevenue = monthlyFineRevenue;
+    }
+
+    public long getMonthlyRenewalRevenue() {
+        return monthlyRenewalRevenue;
+    }
+
+    public void setMonthlyRenewalRevenue(long monthlyRenewalRevenue) {
+        this.monthlyRenewalRevenue = monthlyRenewalRevenue;
+    }
+
+    public long getMonthlyLibraryCardRevenue() {
+        return monthlyLibraryCardRevenue;
+    }
+
+    public void setMonthlyLibraryCardRevenue(long monthlyLibraryCardRevenue) {
+        this.monthlyLibraryCardRevenue = monthlyLibraryCardRevenue;
     }
 
     public long getMonthlyRevenue() {

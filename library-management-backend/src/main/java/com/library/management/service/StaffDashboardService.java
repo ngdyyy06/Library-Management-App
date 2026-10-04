@@ -39,6 +39,10 @@ public class StaffDashboardService {
 
     public StaffDashboardResponse getDashboard() {
 
+        // =========================
+        // GENERAL STATISTICS
+        // =========================
+
         long totalBooks =
                 bookRepository.count();
 
@@ -54,17 +58,13 @@ public class StaffDashboardService {
         long totalReturns =
                 borrowingDetailRepository.countByReturnedAtIsNotNull();
 
+
         // =========================
-        // Revenue - Today
+        // DATE
         // =========================
 
-        long todayFineRevenue =
-                borrowingDetailRepository.getTodayFineRevenue();
-
-        BigDecimal todayRenewalRevenue =
-                renewalPaymentRepository.getTodayRenewalRevenue();
-
-        LocalDate today = LocalDate.now();
+        LocalDate today =
+                LocalDate.now();
 
         LocalDateTime startOfToday =
                 today.atStartOfDay();
@@ -72,26 +72,68 @@ public class StaffDashboardService {
         LocalDateTime startOfTomorrow =
                 today.plusDays(1).atStartOfDay();
 
+
+        // =========================
+        // REVENUE - TODAY
+        // =========================
+
+        BigDecimal todayFineRevenue =
+                borrowingDetailRepository.getTodayFineRevenue();
+
+        long todayFineRevenueValue =
+                todayFineRevenue != null
+                        ? todayFineRevenue.longValue()
+                        : 0L;
+
+
+        BigDecimal todayRenewalRevenue =
+                renewalPaymentRepository.getTodayRenewalRevenue();
+
+        long todayRenewalRevenueValue =
+                todayRenewalRevenue != null
+                        ? todayRenewalRevenue.longValue()
+                        : 0L;
+
+
         BigDecimal todayCardRevenue =
                 libraryCardPaymentRepository.getRevenueBetween(
                         startOfToday,
                         startOfTomorrow
                 );
 
+        long todayCardRevenueValue =
+                todayCardRevenue != null
+                        ? todayCardRevenue.longValue()
+                        : 0L;
+
+
         long todayRevenue =
-                todayFineRevenue
-                        + todayRenewalRevenue.longValue()
-                        + todayCardRevenue.longValue();
+                todayFineRevenueValue
+                        + todayRenewalRevenueValue
+                        + todayCardRevenueValue;
+
 
         // =========================
-        // Revenue - This Month
+        // REVENUE - THIS MONTH
         // =========================
 
-        long monthlyFineRevenue =
+        BigDecimal monthlyFineRevenue =
                 borrowingDetailRepository.getMonthlyFineRevenue();
+
+        long monthlyFineRevenueValue =
+                monthlyFineRevenue != null
+                        ? monthlyFineRevenue.longValue()
+                        : 0L;
+
 
         BigDecimal monthlyRenewalRevenue =
                 renewalPaymentRepository.getMonthlyRenewalRevenue();
+
+        long monthlyRenewalRevenueValue =
+                monthlyRenewalRevenue != null
+                        ? monthlyRenewalRevenue.longValue()
+                        : 0L;
+
 
         LocalDate firstDayOfMonth =
                 today.withDayOfMonth(1);
@@ -104,16 +146,28 @@ public class StaffDashboardService {
                         .plusMonths(1)
                         .atStartOfDay();
 
+
         BigDecimal monthlyCardRevenue =
                 libraryCardPaymentRepository.getRevenueBetween(
                         startOfMonth,
                         startOfNextMonth
                 );
 
+        long monthlyCardRevenueValue =
+                monthlyCardRevenue != null
+                        ? monthlyCardRevenue.longValue()
+                        : 0L;
+
+
         long monthlyRevenue =
-                monthlyFineRevenue
-                        + monthlyRenewalRevenue.longValue()
-                        + monthlyCardRevenue.longValue();
+                monthlyFineRevenueValue
+                        + monthlyRenewalRevenueValue
+                        + monthlyCardRevenueValue;
+
+
+        // =========================
+        // RESPONSE
+        // =========================
 
         return new StaffDashboardResponse(
                 totalBooks,

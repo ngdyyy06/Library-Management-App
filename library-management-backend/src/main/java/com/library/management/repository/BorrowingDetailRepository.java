@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,10 +94,10 @@ public class BorrowingDetailRepository {
     // TODAY FINE REVENUE
     // =========================
 
-    public long getTodayFineRevenue() {
+    public BigDecimal getTodayFineRevenue() {
         try (Session session = sessionFactory.openSession()) {
 
-            Long result = session
+            BigDecimal result = session
                     .createQuery(
                             """
                             SELECT COALESCE(SUM(bd.fine), 0)
@@ -105,11 +106,11 @@ public class BorrowingDetailRepository {
                             WHERE bd.returnedAt IS NOT NULL
                               AND FUNCTION('DATE', bd.returnedAt) = CURRENT_DATE
                             """,
-                            Long.class
+                            BigDecimal.class
                     )
                     .getSingleResult();
 
-            return result != null ? result : 0L;
+            return result != null ? result : BigDecimal.ZERO;
         }
     }
 
@@ -117,10 +118,10 @@ public class BorrowingDetailRepository {
     // MONTHLY FINE REVENUE
     // =========================
 
-    public long getMonthlyFineRevenue() {
+    public BigDecimal getMonthlyFineRevenue() {
         try (Session session = sessionFactory.openSession()) {
 
-            Long result = session
+            BigDecimal result = session
                     .createQuery(
                             """
                             SELECT COALESCE(SUM(bd.fine), 0)
@@ -130,11 +131,11 @@ public class BorrowingDetailRepository {
                               AND YEAR(bd.returnedAt) = YEAR(CURRENT_DATE)
                               AND MONTH(bd.returnedAt) = MONTH(CURRENT_DATE)
                             """,
-                            Long.class
+                            BigDecimal.class
                     )
                     .getSingleResult();
 
-            return result != null ? result : 0L;
+            return result != null ? result : BigDecimal.ZERO;
         }
     }
 

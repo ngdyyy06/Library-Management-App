@@ -25,29 +25,53 @@ public class BorrowingRevenueService {
         // TODAY
         // ==========================================
 
-        long todayFineRevenue =
+        BigDecimal todayFineRevenueDecimal =
                 borrowingDetailRepository.getTodayFineRevenue();
+
+        long todayFineRevenue =
+                todayFineRevenueDecimal != null
+                        ? todayFineRevenueDecimal.longValue()
+                        : 0L;
 
         BigDecimal todayRenewalRevenue =
                 renewalPaymentRepository.getTodayRenewalRevenue();
 
+        long todayRenewalRevenueValue =
+                todayRenewalRevenue != null
+                        ? todayRenewalRevenue.longValue()
+                        : 0L;
+
         long todayRevenue =
                 todayFineRevenue
-                        + todayRenewalRevenue.longValue();
+                        + todayRenewalRevenueValue;
 
         // ==========================================
         // THIS MONTH
         // ==========================================
 
-        long monthlyFineRevenue =
+        BigDecimal monthlyFineRevenueDecimal =
                 borrowingDetailRepository.getMonthlyFineRevenue();
+
+        long monthlyFineRevenue =
+                monthlyFineRevenueDecimal != null
+                        ? monthlyFineRevenueDecimal.longValue()
+                        : 0L;
 
         BigDecimal monthlyRenewalRevenue =
                 renewalPaymentRepository.getMonthlyRenewalRevenue();
 
+        long monthlyRenewalRevenueValue =
+                monthlyRenewalRevenue != null
+                        ? monthlyRenewalRevenue.longValue()
+                        : 0L;
+
         long monthlyRevenue =
                 monthlyFineRevenue
-                        + monthlyRenewalRevenue.longValue();
+                        + monthlyRenewalRevenueValue;
+
+        // ==========================================
+        // RESPONSE
+        // ==========================================
 
         return new BorrowingRevenueResponse(
                 todayRevenue,

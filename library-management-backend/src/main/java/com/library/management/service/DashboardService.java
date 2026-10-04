@@ -59,17 +59,27 @@ public class DashboardService {
 
     public DashboardResponse getDashboard() {
 
-        long totalBooks = bookRepository.count();
+        // ==============================
+        // GENERAL STATISTICS
+        // ==============================
 
-        long totalBookQuantity = bookRepository.sumTotalQuantity();
+        long totalBooks =
+                bookRepository.count();
 
-        long totalReaders = readerRepository.count();
+        long totalBookQuantity =
+                bookRepository.sumTotalQuantity();
 
-        long totalAuthors = authorRepository.count();
+        long totalReaders =
+                readerRepository.count();
 
-        long totalPublishers = publisherRepository.count();
+        long totalAuthors =
+                authorRepository.count();
 
-        long totalCategories = categoryRepository.count();
+        long totalPublishers =
+                publisherRepository.count();
+
+        long totalCategories =
+                categoryRepository.count();
 
         long activeBorrowings =
                 borrowingRepository.countByStatus("BORROWING");
@@ -92,41 +102,50 @@ public class DashboardService {
         long todayReturns =
                 borrowingDetailRepository.getTodayReturnedBooks();
 
-        // ==============================
-        // BORROWING REVENUE
-        // ==============================
-
-        long todayFineRevenue =
-                borrowingDetailRepository.getTodayFineRevenue();
-
-        BigDecimal todayRenewalRevenue =
-                renewalPaymentRepository.getTodayRenewalRevenue();
-
-        long todayBorrowingRevenue =
-                todayFineRevenue
-                        + todayRenewalRevenue.longValue();
-
-        long monthlyFineRevenue =
-                borrowingDetailRepository.getMonthlyFineRevenue();
-
-        BigDecimal monthlyRenewalRevenue =
-                renewalPaymentRepository.getMonthlyRenewalRevenue();
-
-        long monthlyBorrowingRevenue =
-                monthlyFineRevenue
-                        + monthlyRenewalRevenue.longValue();
 
         // ==============================
-        // LIBRARY CARD REVENUE
+        // DATE
         // ==============================
 
-        LocalDate today = LocalDate.now();
+        LocalDate today =
+                LocalDate.now();
 
         LocalDateTime startOfToday =
                 today.atStartOfDay();
 
         LocalDateTime startOfTomorrow =
                 today.plusDays(1).atStartOfDay();
+
+
+        // ==============================
+        // TODAY - FINE REVENUE
+        // ==============================
+
+        BigDecimal todayFineRevenueDecimal =
+                borrowingDetailRepository.getTodayFineRevenue();
+
+        long todayFineRevenue =
+                todayFineRevenueDecimal != null
+                        ? todayFineRevenueDecimal.longValue()
+                        : 0L;
+
+
+        // ==============================
+        // TODAY - RENEWAL REVENUE
+        // ==============================
+
+        BigDecimal todayRenewalRevenueDecimal =
+                renewalPaymentRepository.getTodayRenewalRevenue();
+
+        long todayRenewalRevenue =
+                todayRenewalRevenueDecimal != null
+                        ? todayRenewalRevenueDecimal.longValue()
+                        : 0L;
+
+
+        // ==============================
+        // TODAY - LIBRARY CARD REVENUE
+        // ==============================
 
         BigDecimal todayCardRevenue =
                 libraryCardPaymentRepository.getRevenueBetween(
@@ -135,7 +154,33 @@ public class DashboardService {
                 );
 
         long todayLibraryCardRevenue =
-                todayCardRevenue.longValue();
+                todayCardRevenue != null
+                        ? todayCardRevenue.longValue()
+                        : 0L;
+
+
+        // ==============================
+        // TODAY - TOTAL BORROWING REVENUE
+        // ==============================
+
+        long todayBorrowingRevenue =
+                todayFineRevenue
+                        + todayRenewalRevenue;
+
+
+        // ==============================
+        // TODAY - TOTAL REVENUE
+        // ==============================
+
+        long todayRevenue =
+                todayFineRevenue
+                        + todayRenewalRevenue
+                        + todayLibraryCardRevenue;
+
+
+        // ==============================
+        // MONTH
+        // ==============================
 
         LocalDate firstDayOfMonth =
                 today.withDayOfMonth(1);
@@ -148,6 +193,37 @@ public class DashboardService {
                         .plusMonths(1)
                         .atStartOfDay();
 
+
+        // ==============================
+        // MONTHLY - FINE REVENUE
+        // ==============================
+
+        BigDecimal monthlyFineRevenueDecimal =
+                borrowingDetailRepository.getMonthlyFineRevenue();
+
+        long monthlyFineRevenue =
+                monthlyFineRevenueDecimal != null
+                        ? monthlyFineRevenueDecimal.longValue()
+                        : 0L;
+
+
+        // ==============================
+        // MONTHLY - RENEWAL REVENUE
+        // ==============================
+
+        BigDecimal monthlyRenewalRevenueDecimal =
+                renewalPaymentRepository.getMonthlyRenewalRevenue();
+
+        long monthlyRenewalRevenue =
+                monthlyRenewalRevenueDecimal != null
+                        ? monthlyRenewalRevenueDecimal.longValue()
+                        : 0L;
+
+
+        // ==============================
+        // MONTHLY - LIBRARY CARD REVENUE
+        // ==============================
+
         BigDecimal monthlyCardRevenue =
                 libraryCardPaymentRepository.getRevenueBetween(
                         startOfMonth,
@@ -155,21 +231,37 @@ public class DashboardService {
                 );
 
         long monthlyLibraryCardRevenue =
-                monthlyCardRevenue.longValue();
+                monthlyCardRevenue != null
+                        ? monthlyCardRevenue.longValue()
+                        : 0L;
+
 
         // ==============================
-        // TOTAL ADMIN REVENUE
+        // MONTHLY - TOTAL BORROWING REVENUE
         // ==============================
 
-        long todayRevenue =
-                todayBorrowingRevenue
-                        + todayLibraryCardRevenue;
+        long monthlyBorrowingRevenue =
+                monthlyFineRevenue
+                        + monthlyRenewalRevenue;
+
+
+        // ==============================
+        // MONTHLY - TOTAL REVENUE
+        // ==============================
 
         long monthlyRevenue =
-                monthlyBorrowingRevenue
+                monthlyFineRevenue
+                        + monthlyRenewalRevenue
                         + monthlyLibraryCardRevenue;
 
+
+        // ==============================
+        // RESPONSE
+        // ==============================
+
         return new DashboardResponse(
+
+                // General statistics
                 totalBooks,
                 totalBookQuantity,
                 totalReaders,
@@ -179,11 +271,25 @@ public class DashboardService {
                 activeBorrowings,
                 totalBorrowings,
                 totalImportReceipts,
+
+                // Users
                 totalUsers,
                 activeUsers,
                 inactiveUsers,
+
+                // Returns
                 todayReturns,
+
+                // Today revenue
+                todayFineRevenue,
+                todayRenewalRevenue,
+                todayLibraryCardRevenue,
                 todayRevenue,
+
+                // Monthly revenue
+                monthlyFineRevenue,
+                monthlyRenewalRevenue,
+                monthlyLibraryCardRevenue,
                 monthlyRevenue
         );
     }

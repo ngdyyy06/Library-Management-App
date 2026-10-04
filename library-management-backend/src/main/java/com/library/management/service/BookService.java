@@ -139,11 +139,33 @@ public class BookService {
 
         Set<Author> authors = new HashSet<>();
 
+        /*
+         * Keep track of IDs that have already been processed.
+         *
+         * This is important because the request may contain both:
+         *
+         * authorIds   = [1, 2]
+         * authorNames = ["Author A", "Author B"]
+         *
+         * Without this protection, the same Author entity could
+         * be added twice as different Java objects.
+         */
+        Set<Long> processedAuthorIds = new HashSet<>();
+
+        // =====================================================
+        // Authors selected by ID
+        // =====================================================
+
         if (request.getAuthorIds() != null) {
 
             for (Long authorId : request.getAuthorIds()) {
 
                 if (authorId == null) {
+                    continue;
+                }
+
+                // Prevent duplicate IDs inside authorIds
+                if (!processedAuthorIds.add(authorId)) {
                     continue;
                 }
 
@@ -158,6 +180,10 @@ public class BookService {
                 authors.add(author);
             }
         }
+
+        // =====================================================
+        // Authors by name
+        // =====================================================
 
         if (request.getAuthorNames() != null) {
 
@@ -174,6 +200,7 @@ public class BookService {
                 String normalizedName =
                         trimmedName.toLowerCase(Locale.ROOT);
 
+                // Prevent duplicate names
                 if (!processedNames.add(normalizedName)) {
                     continue;
                 }
@@ -182,6 +209,10 @@ public class BookService {
                         .findByNameIgnoreCase(trimmedName)
                         .orElse(null);
 
+                // =================================================
+                // Create new author if it does not exist
+                // =================================================
+
                 if (author == null) {
 
                     author = new Author();
@@ -189,6 +220,22 @@ public class BookService {
                     author.setStatus("ACTIVE");
 
                     author = authorRepository.save(author);
+
+                } else {
+
+                    /*
+                     * If this author was already selected through
+                     * authorIds, do not add the same author again.
+                     */
+                    if (author.getId() != null
+                            && processedAuthorIds.contains(author.getId())) {
+
+                        continue;
+                    }
+
+                    if (author.getId() != null) {
+                        processedAuthorIds.add(author.getId());
+                    }
                 }
 
                 authors.add(author);
@@ -408,11 +455,33 @@ public class BookService {
 
         Set<Category> categories = new HashSet<>();
 
+        /*
+         * Same protection as Authors.
+         *
+         * The request can contain both:
+         *
+         * categoryIds
+         * categoryNames
+         *
+         * We keep track of already processed IDs so the same
+         * Category cannot be inserted twice into book_categories.
+         */
+        Set<Long> processedCategoryIds = new HashSet<>();
+
+        // =====================================================
+        // Categories selected by ID
+        // =====================================================
+
         if (request.getCategoryIds() != null) {
 
             for (Long categoryId : request.getCategoryIds()) {
 
                 if (categoryId == null) {
+                    continue;
+                }
+
+                // Prevent duplicate IDs inside categoryIds
+                if (!processedCategoryIds.add(categoryId)) {
                     continue;
                 }
 
@@ -429,6 +498,10 @@ public class BookService {
             }
         }
 
+        // =====================================================
+        // Categories by name
+        // =====================================================
+
         if (request.getCategoryNames() != null) {
 
             Set<String> processedNames = new HashSet<>();
@@ -444,6 +517,7 @@ public class BookService {
                 String normalizedName =
                         categoryName.toLowerCase(Locale.ROOT);
 
+                // Prevent duplicate names
                 if (!processedNames.add(normalizedName)) {
                     continue;
                 }
@@ -451,6 +525,10 @@ public class BookService {
                 Category category = categoryRepository
                         .findByNameIgnoreCase(categoryName)
                         .orElse(null);
+
+                // =================================================
+                // Create new category if it does not exist
+                // =================================================
 
                 if (category == null) {
 
@@ -460,6 +538,23 @@ public class BookService {
 
                     category =
                             categoryRepository.save(category);
+
+                } else {
+
+                    /*
+                     * If this category was already selected through
+                     * categoryIds, do not add it again.
+                     */
+                    if (category.getId() != null
+                            && processedCategoryIds.contains(
+                            category.getId())) {
+
+                        continue;
+                    }
+
+                    if (category.getId() != null) {
+                        processedCategoryIds.add(category.getId());
+                    }
                 }
 
                 categories.add(category);
