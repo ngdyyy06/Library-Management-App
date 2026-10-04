@@ -17,17 +17,17 @@ public class LibraryCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name="card_number", nullable = false, unique = true)
     private String cardNumber;
 
     @OneToOne
     @JoinColumn(name = "reader_id", nullable = false, unique = true)
     private Reader reader;
 
-    @Column(nullable = false)
+    @Column(name = "issued_at", nullable = false)
     private LocalDate issuedAt;
 
-    @Column(nullable = false)
+    @Column(name = "expired_at", nullable = false)
     private LocalDate expiredAt;
 
     @Enumerated(EnumType.STRING)

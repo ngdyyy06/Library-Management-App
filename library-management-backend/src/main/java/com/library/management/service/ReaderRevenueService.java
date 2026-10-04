@@ -2,13 +2,11 @@ package com.library.management.service;
 
 import com.library.management.dto.ReaderRevenueResponse;
 import com.library.management.repository.LibraryCardPaymentRepository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Service
 public class ReaderRevenueService {
 
     private final LibraryCardPaymentRepository libraryCardPaymentRepository;

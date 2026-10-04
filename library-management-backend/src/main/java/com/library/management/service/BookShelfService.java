@@ -9,15 +9,11 @@ import com.library.management.entity.Category;
 import com.library.management.repository.BookShelfAllocationRepository;
 import com.library.management.repository.BookShelfRepository;
 import com.library.management.repository.CategoryRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
 public class BookShelfService {
 
     private static final int MAX_CAPACITY = 50;
@@ -29,8 +25,8 @@ public class BookShelfService {
     public BookShelfService(
             BookShelfRepository bookShelfRepository,
             BookShelfAllocationRepository allocationRepository,
-            CategoryRepository categoryRepository
-    ) {
+            CategoryRepository categoryRepository) {
+
         this.bookShelfRepository = bookShelfRepository;
         this.allocationRepository = allocationRepository;
         this.categoryRepository = categoryRepository;
@@ -66,7 +62,6 @@ public class BookShelfService {
     // CREATE SHELF
     // =========================================================
 
-    @Transactional
     public BookShelf createShelf(BookShelf shelf) {
 
         if (shelf.getShelfCode() == null
@@ -132,20 +127,10 @@ public class BookShelfService {
             shelf.setCategories(categories);
 
             /*
-             * IMPORTANT:
-             *
              * A category can belong to multiple shelves.
              *
-             * Example:
-             *
-             * Computer Science
-             *      ├── Programming Shelf
-             *      └── Backup Shelf
-             *
-             * We only set the default shelf if the category
-             * does not have one yet.
-             *
-             * We DO NOT overwrite an existing default shelf.
+             * Only set this shelf as default if the category
+             * does not already have a default shelf.
              */
 
             for (Category category : categories) {
@@ -228,11 +213,9 @@ public class BookShelfService {
     // ALLOCATE BOOK
     // =========================================================
 
-    @Transactional
     public void allocateBook(
             Book book,
-            int quantity
-    ) {
+            int quantity) {
 
         if (quantity <= 0) {
             return;
@@ -362,19 +345,16 @@ public class BookShelfService {
     // REMOVE BOOK QUANTITY
     // =========================================================
 
-    @Transactional
     public void removeBookQuantity(
             Book book,
-            int quantity
-    ) {
+            int quantity) {
 
         if (quantity <= 0) {
             return;
         }
 
         List<BookShelfAllocation> allocations =
-                allocationRepository
-                        .findByBookId(book.getId());
+                allocationRepository.findByBookId(book.getId());
 
         int remaining = quantity;
 
@@ -400,8 +380,9 @@ public class BookShelfService {
 
             if (newQuantity == 0) {
 
-                allocationRepository.delete(
-                        allocation
+                // Repository hiện tại có deleteById()
+                allocationRepository.deleteById(
+                        allocation.getId()
                 );
 
             } else {
@@ -431,11 +412,9 @@ public class BookShelfService {
     // UPDATE SHELF
     // =========================================================
 
-    @Transactional
     public BookShelf updateShelf(
             Long id,
-            BookShelf request
-    ) {
+            BookShelf request) {
 
         BookShelf shelf =
                 bookShelfRepository.findById(id)
@@ -504,32 +483,28 @@ public class BookShelfService {
 
         if (request.getCategories() != null) {
 
-            List<Long> categoryIds =
+            List<Category> categories =
                     request.getCategories()
                             .stream()
-                            .map(Category::getId)
+                            .map(category ->
+                                    categoryRepository
+                                            .findById(
+                                                    category.getId()
+                                            )
+                                            .orElseThrow(() ->
+                                                    new RuntimeException(
+                                                            "Category not found: "
+                                                                    + category.getId()
+                                                    )
+                                            )
+                            )
                             .toList();
-
-            List<Category> categories =
-                    categoryRepository.findAllById(
-                            categoryIds
-                    );
-
-            if (categories.size()
-                    != categoryIds.size()) {
-
-                throw new RuntimeException(
-                        "One or more categories not found"
-                );
-            }
 
             shelf.setCategories(
                     categories
             );
 
             /*
-             * IMPORTANT:
-             *
              * Adding a category to another shelf
              * MUST NOT change its existing default shelf.
              *
@@ -622,8 +597,7 @@ public class BookShelfService {
     // =========================================================
 
     public BookShelfDetailResponse getShelfDetail(
-            Long id
-    ) {
+            Long id) {
 
         BookShelf shelf =
                 bookShelfRepository.findById(id)

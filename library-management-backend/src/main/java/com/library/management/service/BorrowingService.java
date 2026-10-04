@@ -6,8 +6,6 @@ import com.library.management.dto.ReturnBookRequest;
 import com.library.management.entity.*;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // phiếu mượn / 1 lần mượn
-@Service
 public class BorrowingService {
 
     private final BorrowingRepository borrowingRepository;
@@ -43,7 +40,6 @@ public class BorrowingService {
     }
 
     public List<Borrowing> getBorrowingsByReaderId(Long readerId) {
-
         return borrowingRepository.findByReaderId(readerId);
     }
 
@@ -52,7 +48,6 @@ public class BorrowingService {
     // =========================================================
 
     public List<Borrowing> getAllBorrowings() {
-
         return borrowingRepository.findAll();
     }
 
@@ -61,7 +56,6 @@ public class BorrowingService {
     // =========================================================
 
     public Borrowing getBorrowingById(Long id) {
-
         return borrowingRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -84,74 +78,45 @@ public class BorrowingService {
     // RENEW BORROWING
     // =========================================================
 
-    @Transactional
     public Borrowing renewBorrowing(
             Long id,
             RenewBorrowingRequest request) {
 
-        Borrowing borrowing =
-                getBorrowingById(id);
+        Borrowing borrowing = getBorrowingById(id);
 
-        // =====================================================
-        // 1. KIỂM TRA TRẠNG THÁI PHIẾU
-        // =====================================================
-
-        if ("OVERDUE".equals(
-                borrowing.getStatus())) {
-
+        if ("OVERDUE".equals(borrowing.getStatus())) {
             throw new RuntimeException(
                     "Overdue borrowing cannot be renewed. Please return the books."
             );
         }
 
-        if ("RETURNED".equals(
-                borrowing.getStatus())) {
-
+        if ("RETURNED".equals(borrowing.getStatus())) {
             throw new RuntimeException(
                     "Returned borrowing cannot be renewed."
             );
         }
 
-        if (!"BORROWING".equals(
-                borrowing.getStatus())
-                && !"PARTIALLY_RETURNED".equals(
-                borrowing.getStatus())) {
+        if (!"BORROWING".equals(borrowing.getStatus())
+                && !"PARTIALLY_RETURNED".equals(borrowing.getStatus())) {
 
             throw new RuntimeException(
                     "Only active borrowing can be renewed."
             );
         }
 
-        // =====================================================
-        // 2. KIỂM TRA SỐ LẦN GIA HẠN
-        // =====================================================
-
         if (borrowing.getRenewalCount() >= 2) {
-
             throw new RuntimeException(
                     "This borrowing has reached the maximum renewal limit of 2 times."
             );
         }
 
-        // =====================================================
-        // 3. KIỂM TRA SỐ NGÀY GIA HẠN
-        // =====================================================
+        Integer days = request.getDays();
 
-        Integer days =
-                request.getDays();
-
-        if (days == null
-                || days < 3
-                || days > 30) {
-
+        if (days == null || days < 3 || days > 30) {
             throw new RuntimeException(
                     "Renewal period must be between 3 and 30 days."
             );
         }
-
-        // =====================================================
-        // 4. KIỂM TRA THANH TOÁN
-        // =====================================================
 
         if (!Boolean.TRUE.equals(
                 request.getPaymentConfirmed())) {
@@ -161,51 +126,25 @@ public class BorrowingService {
             );
         }
 
-        // =====================================================
-        // 5. TÍNH PHÍ GIA HẠN
-        // 1.000 VNĐ / 1 NGÀY
-        // =====================================================
-
+        // 1.000 VNĐ / 1 ngày
         BigDecimal renewalFee =
                 BigDecimal.valueOf(days)
-                        .multiply(
-                                BigDecimal.valueOf(1000)
-                        );
-
-        // =====================================================
-        // 6. LƯU GIAO DỊCH THANH TOÁN GIA HẠN
-        // =====================================================
+                        .multiply(BigDecimal.valueOf(1000));
 
         RenewalPayment renewalPayment =
                 new RenewalPayment();
 
-        renewalPayment.setBorrowing(
-                borrowing
-        );
-
-        renewalPayment.setDays(
-                days
-        );
-
-        renewalPayment.setAmount(
-                renewalFee
-        );
-
-        renewalPayment.setPaidAt(
-                LocalDateTime.now()
-        );
+        renewalPayment.setBorrowing(borrowing);
+        renewalPayment.setDays(days);
+        renewalPayment.setAmount(renewalFee);
+        renewalPayment.setPaidAt(LocalDateTime.now());
 
         renewalPaymentRepository.save(
                 renewalPayment
         );
 
-        // =====================================================
-        // 7. GIA HẠN
-        // =====================================================
-
         borrowing.setDueDate(
-                borrowing.getDueDate()
-                        .plusDays(days)
+                borrowing.getDueDate().plusDays(days)
         );
 
         borrowing.setRenewalCount(
@@ -221,11 +160,9 @@ public class BorrowingService {
     // BORROW BOOKS
     // =========================================================
 
-    @Transactional
     public Borrowing borrowBooks(
             CreateBorrowingRequest request) {
 
-        // 1. Tìm độc giả
         Reader reader =
                 readerRepository
                         .findById(request.getReaderId())
@@ -234,24 +171,18 @@ public class BorrowingService {
                                         "Reader not found"
                                 ));
 
-        // 2. Kiểm tra độc giả đang hoạt động
-        if (!"ACTIVE".equals(
-                reader.getStatus())) {
-
+        if (!"ACTIVE".equals(reader.getStatus())) {
             throw new RuntimeException(
                     "Reader is not active"
             );
         }
 
-        // 3. Kiểm tra độc giả có phiếu quá hạn
         List<Borrowing> borrowings =
-                borrowingRepository
-                        .findByReaderId(
-                                reader.getId()
-                        );
+                borrowingRepository.findByReaderId(
+                        reader.getId()
+                );
 
-        for (Borrowing borrowing
-                : borrowings) {
+        for (Borrowing borrowing : borrowings) {
 
             if ("OVERDUE".equals(
                     borrowing.getStatus())) {
@@ -262,7 +193,6 @@ public class BorrowingService {
             }
         }
 
-        // 4. Kiểm tra tổng số lượng sách trong lần mượn
         int totalQuantity =
                 request.getBooks()
                         .stream()
@@ -273,13 +203,11 @@ public class BorrowingService {
                         .sum();
 
         if (totalQuantity > 5) {
-
             throw new RuntimeException(
                     "A reader can borrow maximum 5 books"
             );
         }
 
-        // 5. Kiểm tra sách không bị trùng
         long distinctBookCount =
                 request.getBooks()
                         .stream()
@@ -298,7 +226,6 @@ public class BorrowingService {
             );
         }
 
-        // 6. Kiểm tra từng sách
         List<Book> books =
                 new ArrayList<>();
 
@@ -337,7 +264,6 @@ public class BorrowingService {
             books.add(book);
         }
 
-        // 7. Kiểm tra tổng số sách reader đang mượn
         long currentBorrowedBooks =
                 borrowingDetailRepository
                         .countUnreturnedBooksByReaderId(
@@ -352,7 +278,6 @@ public class BorrowingService {
             );
         }
 
-        // 8. Tính tiền đặt cọc
         BigDecimal depositAmount =
                 BigDecimal.ZERO;
 
@@ -363,8 +288,7 @@ public class BorrowingService {
             CreateBorrowingRequest.BookBorrowItem item =
                     request.getBooks().get(i);
 
-            Book book =
-                    books.get(i);
+            Book book = books.get(i);
 
             BigDecimal bookDeposit =
                     book.getPrice()
@@ -380,7 +304,6 @@ public class BorrowingService {
                     );
         }
 
-        // 9. Tạo phiếu mượn
         Borrowing borrowing =
                 new Borrowing(
                         null,
@@ -391,17 +314,13 @@ public class BorrowingService {
                 );
 
         borrowing.setRenewalCount(0);
-
-        borrowing.setDepositAmount(
-                depositAmount
-        );
+        borrowing.setDepositAmount(depositAmount);
 
         borrowing =
                 borrowingRepository.save(
                         borrowing
                 );
 
-        // 10. Tạo chi tiết mượn
         for (int i = 0;
              i < request.getBooks().size();
              i++) {
@@ -409,51 +328,29 @@ public class BorrowingService {
             CreateBorrowingRequest.BookBorrowItem item =
                     request.getBooks().get(i);
 
-            Book book =
-                    books.get(i);
+            Book book = books.get(i);
 
             BorrowingDetail detail =
                     new BorrowingDetail();
 
-            detail.setBorrowing(
-                    borrowing
-            );
-
-            detail.setBook(
-                    book
-            );
-
-            detail.setQuantity(
-                    item.getQuantity()
-            );
-
+            detail.setBorrowing(borrowing);
+            detail.setBook(book);
+            detail.setQuantity(item.getQuantity());
             detail.setGoodQuantity(0);
-
             detail.setDamagedQuantity(0);
-
             detail.setLostQuantity(0);
-
             detail.setReturnedAt(null);
-
             detail.setFine(0);
+            detail.setDamageFine(BigDecimal.ZERO);
 
-            detail.setDamageFine(
-                    BigDecimal.ZERO
-            );
+            borrowingDetailRepository.save(detail);
 
-            borrowingDetailRepository.save(
-                    detail
-            );
-
-            // 11. Giảm số lượng sách có thể cho mượn
             book.setAvailableQuantity(
                     book.getAvailableQuantity()
                             - item.getQuantity()
             );
 
-            bookRepository.save(
-                    book
-            );
+            bookRepository.save(book);
         }
 
         return borrowing;
@@ -463,12 +360,10 @@ public class BorrowingService {
     // TRẢ SÁCH
     // =========================================================
 
-    @Transactional
     public BorrowingDetail returnBook(
             Long detailId,
             ReturnBookRequest request) {
 
-        // 1. Tìm borrowing detail
         BorrowingDetail detail =
                 borrowingDetailRepository
                         .findById(detailId)
@@ -477,29 +372,16 @@ public class BorrowingService {
                                         "Borrowing detail not found"
                                 ));
 
-        Book book =
-                detail.getBook();
-
-        // =====================================================
-        // 2. TÍNH SỐ LƯỢNG ĐÃ TRẢ TRƯỚC ĐÓ
-        // =====================================================
+        Book book = detail.getBook();
 
         int alreadyReturned =
                 detail.getGoodQuantity()
                         + detail.getDamagedQuantity()
                         + detail.getLostQuantity();
 
-        // =====================================================
-        // 3. TÍNH SỐ LƯỢNG CÒN PHẢI TRẢ
-        // =====================================================
-
         int remainingQuantity =
                 detail.getQuantity()
                         - alreadyReturned;
-
-        // =====================================================
-        // 4. LẤY SỐ LƯỢNG TRẢ TRONG LẦN NÀY
-        // =====================================================
 
         int goodQuantity =
                 request.getGoodQuantity();
@@ -510,10 +392,6 @@ public class BorrowingService {
         int lostQuantity =
                 request.getLostQuantity();
 
-        // =====================================================
-        // 5. KHÔNG CHO SỐ LƯỢNG ÂM
-        // =====================================================
-
         if (goodQuantity < 0
                 || damagedQuantity < 0
                 || lostQuantity < 0) {
@@ -523,26 +401,17 @@ public class BorrowingService {
             );
         }
 
-        // =====================================================
-        // 6. TỔNG SỐ LƯỢNG TRẢ TRONG LẦN NÀY
-        // =====================================================
-
         int currentReturnedQuantity =
                 goodQuantity
                         + damagedQuantity
                         + lostQuantity;
 
-        // Không được trả 0 sách
         if (currentReturnedQuantity <= 0) {
 
             throw new RuntimeException(
                     "At least one book must be returned"
             );
         }
-
-        // =====================================================
-        // 7. KHÔNG ĐƯỢC TRẢ QUÁ SỐ LƯỢNG CÒN LẠI
-        // =====================================================
 
         if (currentReturnedQuantity
                 > remainingQuantity) {
@@ -552,10 +421,6 @@ public class BorrowingService {
                             + remainingQuantity
             );
         }
-
-        // =====================================================
-        // 8. CỘNG DỒN SỐ LƯỢNG ĐÃ TRẢ
-        // =====================================================
 
         detail.setGoodQuantity(
                 detail.getGoodQuantity()
@@ -572,10 +437,6 @@ public class BorrowingService {
                         + lostQuantity
         );
 
-        // =====================================================
-        // 9. SÁCH GOOD QUAY LẠI KHO
-        // =====================================================
-
         if (goodQuantity > 0) {
 
             book.setAvailableQuantity(
@@ -583,10 +444,6 @@ public class BorrowingService {
                             + goodQuantity
             );
         }
-
-        // =====================================================
-        // 10. TÍNH PHÍ TRẢ MUỘN
-        // =====================================================
 
         int lateFine =
                 calculateFine(detail);
@@ -596,11 +453,6 @@ public class BorrowingService {
                         + lateFine
         );
 
-        // =====================================================
-        // 11. PHÍ DAMAGE
-        // 50.000 VNĐ / 1 SÁCH HỎNG
-        // =====================================================
-
         BigDecimal damageFine =
                 BigDecimal.valueOf(
                                 damagedQuantity
@@ -608,11 +460,6 @@ public class BorrowingService {
                         .multiply(
                                 new BigDecimal("50000")
                         );
-
-        // =====================================================
-        // 12. PHÍ LOST
-        // GIÁ SÁCH × SỐ SÁCH MẤT
-        // =====================================================
 
         BigDecimal lostFine =
                 book.getPrice()
@@ -623,20 +470,12 @@ public class BorrowingService {
                         );
 
         BigDecimal currentDamageFine =
-                damageFine.add(
-                        lostFine
-                );
+                damageFine.add(lostFine);
 
         detail.setDamageFine(
                 detail.getDamageFine()
-                        .add(
-                                currentDamageFine
-                        )
+                        .add(currentDamageFine)
         );
-
-        // =====================================================
-        // 13. KIỂM TRA DETAIL ĐÃ TRẢ HẾT CHƯA
-        // =====================================================
 
         int totalReturnedAfterThisTime =
                 detail.getGoodQuantity()
@@ -651,28 +490,11 @@ public class BorrowingService {
             );
         }
 
-        // =====================================================
-        // 14. LƯU DETAIL + BOOK
-        // =====================================================
-
-        borrowingDetailRepository.save(
-                detail
-        );
-
-        bookRepository.save(
-                book
-        );
-
-        // =====================================================
-        // 15. LẤY PHIẾU MƯỢN
-        // =====================================================
+        borrowingDetailRepository.save(detail);
+        bookRepository.save(book);
 
         Borrowing borrowing =
                 detail.getBorrowing();
-
-        // =====================================================
-        // 16. KIỂM TRA TOÀN BỘ PHIẾU ĐÃ TRẢ HẾT CHƯA
-        // =====================================================
 
         long unreturnedBooks =
                 borrowingDetailRepository
@@ -684,12 +506,8 @@ public class BorrowingService {
 
         if (unreturnedBooks == 0) {
 
-            borrowing.setStatus(
-                    "RETURNED"
-            );
-
-            returnStatus =
-                    "RETURNED";
+            borrowing.setStatus("RETURNED");
+            returnStatus = "RETURNED";
 
         } else {
 
@@ -701,60 +519,23 @@ public class BorrowingService {
                     "PARTIALLY_RETURNED";
         }
 
-        borrowingRepository.save(
-                borrowing
-        );
-
-        // =====================================================
-        // 17. LƯU RETURN HISTORY
-        // =====================================================
+        borrowingRepository.save(borrowing);
 
         ReturnHistory returnHistory =
                 new ReturnHistory();
 
-        returnHistory.setBorrowingDetail(
-                detail
-        );
+        returnHistory.setBorrowingDetail(detail);
+        returnHistory.setBorrowing(borrowing);
+        returnHistory.setBook(book);
+        returnHistory.setGoodQuantity(goodQuantity);
+        returnHistory.setDamagedQuantity(damagedQuantity);
+        returnHistory.setLostQuantity(lostQuantity);
+        returnHistory.setFine(lateFine);
+        returnHistory.setDamageFine(currentDamageFine);
+        returnHistory.setReturnedAt(LocalDateTime.now());
+        returnHistory.setStatus(returnStatus);
 
-        returnHistory.setBorrowing(
-                borrowing
-        );
-
-        returnHistory.setBook(
-                book
-        );
-
-        returnHistory.setGoodQuantity(
-                goodQuantity
-        );
-
-        returnHistory.setDamagedQuantity(
-                damagedQuantity
-        );
-
-        returnHistory.setLostQuantity(
-                lostQuantity
-        );
-
-        returnHistory.setFine(
-                lateFine
-        );
-
-        returnHistory.setDamageFine(
-                currentDamageFine
-        );
-
-        returnHistory.setReturnedAt(
-                LocalDateTime.now()
-        );
-
-        returnHistory.setStatus(
-                returnStatus
-        );
-
-        returnHistoryRepository.save(
-                returnHistory
-        );
+        returnHistoryRepository.save(returnHistory);
 
         return detail;
     }
@@ -768,17 +549,14 @@ public class BorrowingService {
         List<Borrowing> borrowings =
                 borrowingRepository.findAll();
 
-        for (Borrowing borrowing
-                : borrowings) {
+        for (Borrowing borrowing : borrowings) {
 
             if ("BORROWING".equals(
                     borrowing.getStatus())
                     && LocalDate.now().isAfter(
                     borrowing.getDueDate())) {
 
-                borrowing.setStatus(
-                        "OVERDUE"
-                );
+                borrowing.setStatus("OVERDUE");
 
                 borrowingRepository.save(
                         borrowing

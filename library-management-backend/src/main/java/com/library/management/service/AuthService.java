@@ -1,56 +1,51 @@
 package com.library.management.service;
 
-import com.library.management.dto.LoginRequest;
 import com.library.management.entity.User;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-@Service
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final PasswordService passwordService;
 
     public AuthService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService
+            PasswordService passwordService
     ) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
+        this.passwordService = passwordService;
     }
 
-    public String login(LoginRequest request) {
+    public User login(String username, String password) {
 
-        // Kiểm tra tên tài khoản tồn tại
-        User user = userRepository.findAll().stream()
-                .filter(u -> u.getUsername().equals(request.getUsername()))
-                .findFirst()
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Username not found"));
+                        new ResourceNotFoundException(
+                                "Username not found"
+                        ));
 
         boolean passwordMatches;
 
+        // Password đã được mã hóa BCrypt
         if (user.getPassword().startsWith("$2a$")
                 || user.getPassword().startsWith("$2b$")) {
 
-            passwordMatches = passwordEncoder.matches(
-                    request.getPassword(),
+            passwordMatches = passwordService.matches(
+                    password,
                     user.getPassword()
             );
 
         } else {
+            // Password cũ đang lưu dạng plain text
+            passwordMatches = password.equals(
+                    user.getPassword()
+            );
 
-            passwordMatches = request.getPassword()
-                    .equals(user.getPassword());
-
+            // Nếu đăng nhập đúng thì tự động mã hóa password
             if (passwordMatches) {
                 user.setPassword(
-                        passwordEncoder.encode(request.getPassword())
+                        passwordService.encode(password)
                 );
 
                 userRepository.save(user);
@@ -58,22 +53,27 @@ public class AuthService {
         }
 
         if (!passwordMatches) {
-            throw new RuntimeException("Incorrect password");
+            throw new RuntimeException(
+                    "Incorrect password"
+            );
         }
 
         if ("INACTIVE".equals(user.getStatus())) {
-            throw new RuntimeException("User is inactive");
+            throw new RuntimeException(
+                    "User is inactive"
+            );
         }
 
-        return jwtService.generateToken(user);
+        return user;
     }
 
-    // Lấy role của user
     public String getUserRole(Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
         return user.getRole().getName();
     }

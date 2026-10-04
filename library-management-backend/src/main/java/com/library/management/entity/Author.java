@@ -13,7 +13,7 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")  // biography có thể chứa đoạn văn dài
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
     @Column(nullable = false)
@@ -26,13 +26,6 @@ public class Author {
         this.id = id;
         this.name = name;
         this.biography = biography;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -58,5 +51,13 @@ public class Author {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

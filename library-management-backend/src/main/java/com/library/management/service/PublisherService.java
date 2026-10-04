@@ -3,11 +3,9 @@ package com.library.management.service;
 import com.library.management.entity.Publisher;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.PublisherRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class PublisherService {
 
     private final PublisherRepository publisherRepository;

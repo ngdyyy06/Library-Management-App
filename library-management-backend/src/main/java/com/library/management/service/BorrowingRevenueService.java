@@ -3,11 +3,9 @@ package com.library.management.service;
 import com.library.management.dto.BorrowingRevenueResponse;
 import com.library.management.repository.BorrowingDetailRepository;
 import com.library.management.repository.RenewalPaymentRepository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-@Service
 public class BorrowingRevenueService {
 
     private final BorrowingDetailRepository borrowingDetailRepository;
@@ -23,11 +21,9 @@ public class BorrowingRevenueService {
 
     public BorrowingRevenueResponse getRevenue() {
 
-        /*
-         * ==========================================
-         * TODAY
-         * ==========================================
-         */
+        // ==========================================
+        // TODAY
+        // ==========================================
 
         long todayFineRevenue =
                 borrowingDetailRepository.getTodayFineRevenue();
@@ -39,12 +35,9 @@ public class BorrowingRevenueService {
                 todayFineRevenue
                         + todayRenewalRevenue.longValue();
 
-
-        /*
-         * ==========================================
-         * THIS MONTH
-         * ==========================================
-         */
+        // ==========================================
+        // THIS MONTH
+        // ==========================================
 
         long monthlyFineRevenue =
                 borrowingDetailRepository.getMonthlyFineRevenue();
@@ -55,7 +48,6 @@ public class BorrowingRevenueService {
         long monthlyRevenue =
                 monthlyFineRevenue
                         + monthlyRenewalRevenue.longValue();
-
 
         return new BorrowingRevenueResponse(
                 todayRevenue,

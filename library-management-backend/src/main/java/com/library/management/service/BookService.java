@@ -11,8 +11,6 @@ import com.library.management.repository.AuthorRepository;
 import com.library.management.repository.BookRepository;
 import com.library.management.repository.CategoryRepository;
 import com.library.management.repository.PublisherRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-@Service
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -47,12 +44,7 @@ public class BookService {
     // CREATE BOOK
     // =========================================================
 
-    @Transactional
     public Book createBook(CreateBookRequest request) {
-
-        // =====================================================
-        // Check duplicate ISBN
-        // =====================================================
 
         if (request.getIsbn() != null
                 && !request.getIsbn().isBlank()
@@ -60,10 +52,6 @@ public class BookService {
 
             throw new RuntimeException("ISBN already exists");
         }
-
-        // =====================================================
-        // Validate price
-        // =====================================================
 
         if (request.getPrice() == null
                 || request.getPrice().compareTo(BigDecimal.ZERO) < 0) {
@@ -110,10 +98,7 @@ public class BookService {
         book.setDescription(request.getDescription());
         book.setPrice(request.getPrice());
 
-        /*
-         * Quantity is managed through Import Receipt.
-         * A newly created book has no physical copies yet.
-         */
+        // Quantity is managed through Import Receipt
         book.setTotalQuantity(0);
         book.setAvailableQuantity(0);
 
@@ -124,7 +109,6 @@ public class BookService {
         // =====================================================
 
         Set<Author> authors = resolveAuthors(request);
-
         book.setAuthors(authors);
 
         // =====================================================
@@ -132,7 +116,6 @@ public class BookService {
         // =====================================================
 
         Set<Category> categories = resolveCategories(request);
-
         book.setCategories(categories);
 
         // =====================================================
@@ -156,10 +139,6 @@ public class BookService {
 
         Set<Author> authors = new HashSet<>();
 
-        // =====================================================
-        // Existing Authors
-        // =====================================================
-
         if (request.getAuthorIds() != null) {
 
             for (Long authorId : request.getAuthorIds()) {
@@ -179,10 +158,6 @@ public class BookService {
                 authors.add(author);
             }
         }
-
-        // =====================================================
-        // Authors entered by name
-        // =====================================================
 
         if (request.getAuthorNames() != null) {
 
@@ -210,7 +185,6 @@ public class BookService {
                 if (author == null) {
 
                     author = new Author();
-
                     author.setName(trimmedName);
                     author.setStatus("ACTIVE");
 
@@ -229,7 +203,6 @@ public class BookService {
     // =========================================================
 
     public List<Book> getAllBooks() {
-
         return bookRepository.findAll();
     }
 
@@ -251,7 +224,6 @@ public class BookService {
     // UPDATE BOOK
     // =========================================================
 
-    @Transactional
     public Book updateBook(Long id, CreateBookRequest request) {
 
         Book book = bookRepository.findById(id)
@@ -260,10 +232,6 @@ public class BookService {
                                 "Book not found"
                         )
                 );
-
-        // =====================================================
-        // Save old Primary Category
-        // =====================================================
 
         Category oldPrimaryCategory =
                 book.getPrimaryCategory();
@@ -335,7 +303,6 @@ public class BookService {
                 || request.getAuthorNames() != null) {
 
             Set<Author> authors = resolveAuthors(request);
-
             book.setAuthors(authors);
         }
 
@@ -354,10 +321,6 @@ public class BookService {
 
             book.setCategories(categories);
 
-            /*
-             * When categories are changed,
-             * primary category must also be specified.
-             */
             if (request.getPrimaryCategoryId() == null) {
 
                 throw new RuntimeException(
@@ -374,10 +337,6 @@ public class BookService {
 
         } else if (request.getPrimaryCategoryId() != null) {
 
-            /*
-             * Categories are unchanged,
-             * but the primary category is changed.
-             */
             updatePrimaryCategoryAndShelf(
                     book,
                     oldPrimaryCategory,
@@ -386,17 +345,7 @@ public class BookService {
             );
         }
 
-        /*
-         * Do NOT modify totalQuantity or availableQuantity here.
-         *
-         * Book quantity is managed by ImportReceipt:
-         *
-         * Import book
-         *      ↓
-         * totalQuantity += quantity
-         * availableQuantity += quantity
-         */
-
+        // Quantity is managed by ImportReceipt
         return bookRepository.save(book);
     }
 
@@ -421,16 +370,6 @@ public class BookService {
         }
 
         book.setStatus("INACTIVE");
-
-        /*
-         * Do not modify availableQuantity.
-         *
-         * The book is inactive, so borrowing/import operations
-         * can reject it based on status.
-         *
-         * Keeping the quantity unchanged allows us to restore
-         * the same inventory state when the book is activated.
-         */
 
         return bookRepository.save(book);
     }
@@ -457,11 +396,6 @@ public class BookService {
 
         book.setStatus("ACTIVE");
 
-        /*
-         * availableQuantity is kept unchanged when deactivating,
-         * so there is no need to recalculate it here.
-         */
-
         return bookRepository.save(book);
     }
 
@@ -473,10 +407,6 @@ public class BookService {
             CreateBookRequest request) {
 
         Set<Category> categories = new HashSet<>();
-
-        // =====================================================
-        // Existing Categories
-        // =====================================================
 
         if (request.getCategoryIds() != null) {
 
@@ -498,10 +428,6 @@ public class BookService {
                 categories.add(category);
             }
         }
-
-        // =====================================================
-        // Categories entered by name
-        // =====================================================
 
         if (request.getCategoryNames() != null) {
 
@@ -529,7 +455,6 @@ public class BookService {
                 if (category == null) {
 
                     category = new Category();
-
                     category.setName(categoryName);
                     category.setStatus("ACTIVE");
 
@@ -546,17 +471,12 @@ public class BookService {
 
     // =========================================================
     // APPLY PRIMARY CATEGORY + SHELF
-    // Used when creating a new book.
     // =========================================================
 
     private void applyPrimaryCategoryAndShelf(
             Book book,
             Long primaryCategoryId,
             Set<Category> categories) {
-
-        // =====================================================
-        // Primary Category is required
-        // =====================================================
 
         if (primaryCategoryId == null) {
 
@@ -565,10 +485,6 @@ public class BookService {
             );
         }
 
-        // =====================================================
-        // Find Primary Category
-        // =====================================================
-
         Category primaryCategory = categoryRepository
                 .findById(primaryCategoryId)
                 .orElseThrow(() ->
@@ -576,10 +492,6 @@ public class BookService {
                                 "Primary category not found"
                         )
                 );
-
-        // =====================================================
-        // Primary Category must belong to book categories
-        // =====================================================
 
         boolean belongsToBook =
                 categories.stream()
@@ -594,10 +506,6 @@ public class BookService {
             );
         }
 
-        // =====================================================
-        // Find Default Shelf
-        // =====================================================
-
         BookShelf defaultShelf =
                 primaryCategory.getDefaultShelf();
 
@@ -608,22 +516,12 @@ public class BookService {
             );
         }
 
-        // =====================================================
-        // Set Primary Category
-        // =====================================================
-
         book.setPrimaryCategory(primaryCategory);
-
-        // =====================================================
-        // Set Physical Shelf
-        // =====================================================
-
         book.setShelf(defaultShelf);
     }
 
     // =========================================================
     // UPDATE PRIMARY CATEGORY + SHELF
-    // Used when editing an existing book.
     // =========================================================
 
     private void updatePrimaryCategoryAndShelf(
@@ -632,20 +530,12 @@ public class BookService {
             Long newPrimaryCategoryId,
             Set<Category> categories) {
 
-        // =====================================================
-        // Validate new Primary Category
-        // =====================================================
-
         if (newPrimaryCategoryId == null) {
 
             throw new RuntimeException(
                     "Primary category is required"
             );
         }
-
-        // =====================================================
-        // Find new Primary Category
-        // =====================================================
 
         Category newPrimaryCategory =
                 categoryRepository.findById(newPrimaryCategoryId)
@@ -654,10 +544,6 @@ public class BookService {
                                         "Primary category not found"
                                 )
                         );
-
-        // =====================================================
-        // Primary Category must belong to book categories
-        // =====================================================
 
         boolean belongsToBook =
                 categories.stream()
@@ -672,10 +558,6 @@ public class BookService {
             );
         }
 
-        // =====================================================
-        // Find new Default Shelf
-        // =====================================================
-
         BookShelf newDefaultShelf =
                 newPrimaryCategory.getDefaultShelf();
 
@@ -686,42 +568,17 @@ public class BookService {
             );
         }
 
-        // =====================================================
-        // Check whether Primary Category changed
-        // =====================================================
-
         boolean primaryCategoryChanged =
                 oldPrimaryCategory == null
                         || !oldPrimaryCategory.getId()
                         .equals(newPrimaryCategory.getId());
 
-        // =====================================================
-        // Move physical copies between shelves
-        // =====================================================
-
         if (primaryCategoryChanged) {
 
-            /*
-             * Get the quantity that is actually allocated
-             * on shelves.
-             *
-             * Example:
-             *
-             * totalQuantity     = 3
-             * availableQuantity = 2
-             * shelf allocation  = 2
-             *
-             * Only 2 copies are physically available
-             * on the shelf. The other copy may be borrowed.
-             */
             int allocatedQuantity =
                     bookShelfService.getAllocatedQuantity(
                             book.getId()
                     );
-
-            // =================================================
-            // Remove old shelf allocation
-            // =================================================
 
             if (allocatedQuantity > 0) {
 
@@ -731,30 +588,10 @@ public class BookService {
                 );
             }
 
-            // =================================================
-            // Change Primary Category
-            // =================================================
-
             book.setPrimaryCategory(
                     newPrimaryCategory
             );
 
-            /*
-             * Normally allocatedQuantity should contain
-             * the number of available copies on shelves.
-             *
-             * However, some older books may have:
-             *
-             * totalQuantity     > 0
-             * availableQuantity > 0
-             * allocation        = 0
-             *
-             * Doraemon is currently in this state.
-             *
-             * In that case, use availableQuantity to repair
-             * the shelf allocation when the Primary Category
-             * is changed.
-             */
             int quantityToAllocate;
 
             if (allocatedQuantity > 0) {
@@ -769,10 +606,6 @@ public class BookService {
                                 : 0;
             }
 
-            // =================================================
-            // Allocate available copies to new shelf
-            // =================================================
-
             if (quantityToAllocate > 0) {
 
                 bookShelfService.allocateBook(
@@ -783,22 +616,11 @@ public class BookService {
 
         } else {
 
-            /*
-             * Primary category did not change.
-             *
-             * Only update the primary category reference.
-             */
             book.setPrimaryCategory(
                     newPrimaryCategory
             );
         }
 
-        // =====================================================
-        // Update Book Shelf reference
-        // =====================================================
-
-        book.setShelf(
-                newDefaultShelf
-        );
+        book.setShelf(newDefaultShelf);
     }
 }

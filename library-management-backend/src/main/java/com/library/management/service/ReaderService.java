@@ -8,18 +8,16 @@ import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.LibraryCardPaymentRepository;
 import com.library.management.repository.LibraryCardRepository;
 import com.library.management.repository.ReaderRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
 public class ReaderService {
 
-    private static final BigDecimal CARD_FEE = new BigDecimal("50000");
+    private static final BigDecimal CARD_FEE =
+            new BigDecimal("50000");
 
     private final ReaderRepository readerRepository;
     private final LibraryCardRepository libraryCardRepository;
@@ -41,7 +39,6 @@ public class ReaderService {
     }
 
     // Tạo Reader mới + cấp Library Card + thu Card Fee
-    @Transactional
     public Reader createReader(CreateReaderRequest request) {
 
         String readerCode = request.getReaderCode() != null
@@ -57,17 +54,27 @@ public class ReaderService {
                 : null;
 
         if (readerRepository.existsByReaderCode(readerCode)) {
-            throw new RuntimeException("Reader code already exists!");
+            throw new RuntimeException(
+                    "Reader code already exists!"
+            );
         }
 
-        if (email != null && !email.isBlank()
+        if (email != null
+                && !email.isBlank()
                 && readerRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email already exists!");
+
+            throw new RuntimeException(
+                    "Email already exists!"
+            );
         }
 
-        if (phone != null && !phone.isBlank()
+        if (phone != null
+                && !phone.isBlank()
                 && readerRepository.existsByPhone(phone)) {
-            throw new RuntimeException("Phone number already exists!");
+
+            throw new RuntimeException(
+                    "Phone number already exists!"
+            );
         }
 
         Reader reader = new Reader();
@@ -81,20 +88,31 @@ public class ReaderService {
         reader.setStatus("ACTIVE");
         reader.setCreatedAt(LocalDateTime.now());
 
-        Reader savedReader = readerRepository.save(reader);
+        Reader savedReader =
+                readerRepository.save(reader);
 
-        String cardNumber = generateCardNumber();
+        String cardNumber =
+                generateCardNumber();
 
-        LibraryCard card = new LibraryCard();
+        LibraryCard card =
+                new LibraryCard();
+
         card.setCardNumber(cardNumber);
         card.setReader(savedReader);
         card.setIssuedAt(LocalDate.now());
-        card.setExpiredAt(LocalDate.now().plusYears(1));
-        card.setStatus(LibraryCard.CardStatus.ACTIVE);
+        card.setExpiredAt(
+                LocalDate.now().plusYears(1)
+        );
+        card.setStatus(
+                LibraryCard.CardStatus.ACTIVE
+        );
 
-        LibraryCard savedCard = libraryCardRepository.save(card);
+        LibraryCard savedCard =
+                libraryCardRepository.save(card);
 
-        LibraryCardPayment payment = new LibraryCardPayment();
+        LibraryCardPayment payment =
+                new LibraryCardPayment();
+
         payment.setLibraryCard(savedCard);
         payment.setAmount(CARD_FEE);
         payment.setPaidAt(LocalDateTime.now());
@@ -106,43 +124,79 @@ public class ReaderService {
 
     // Lấy Reader theo ID
     public Reader getReaderById(Long id) {
+
         return readerRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Reader not found!"));
+                        new ResourceNotFoundException(
+                                "Reader not found!"
+                        ));
     }
 
     // Cập nhật thông tin Reader
-    public Reader updateReader(Long id, CreateReaderRequest request) {
+    public Reader updateReader(
+            Long id,
+            CreateReaderRequest request) {
 
-        Reader reader = readerRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Reader not found"));
+        Reader reader =
+                readerRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Reader not found"
+                                ));
 
         // Kiểm tra ReaderCode trùng với Reader khác
         if (readerRepository.existsByReaderCodeAndIdNot(
-                request.getReaderCode(), id)) {
+                request.getReaderCode(),
+                id)) {
 
-            throw new RuntimeException("Reader code already exists");
+            throw new RuntimeException(
+                    "Reader code already exists"
+            );
         }
 
+        // Kiểm tra Email trùng
         if (readerRepository.existsByEmailAndIdNot(
-                request.getEmail(), id)) {
+                request.getEmail(),
+                id)) {
 
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException(
+                    "Email already exists"
+            );
         }
 
+        // Kiểm tra Phone trùng
         if (readerRepository.existsByPhoneAndIdNot(
-                request.getPhone(), id)) {
+                request.getPhone(),
+                id)) {
 
-            throw new RuntimeException("Phone number already exists");
+            throw new RuntimeException(
+                    "Phone number already exists"
+            );
         }
 
-        reader.setReaderCode(request.getReaderCode());
-        reader.setFullName(request.getFullName());
-        reader.setEmail(request.getEmail());
-        reader.setPhone(request.getPhone());
-        reader.setAddress(request.getAddress());
-        reader.setDateOfBirth(request.getDateOfBirth());
+        reader.setReaderCode(
+                request.getReaderCode()
+        );
+
+        reader.setFullName(
+                request.getFullName()
+        );
+
+        reader.setEmail(
+                request.getEmail()
+        );
+
+        reader.setPhone(
+                request.getPhone()
+        );
+
+        reader.setAddress(
+                request.getAddress()
+        );
+
+        reader.setDateOfBirth(
+                request.getDateOfBirth()
+        );
 
         return readerRepository.save(reader);
     }
@@ -150,19 +204,31 @@ public class ReaderService {
     // Khóa thẻ thành viên
     public Reader deactivateReader(Long id) {
 
-        Reader reader = readerRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Reader not found"));
+        Reader reader =
+                readerRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Reader not found"
+                                ));
 
-        if ("INACTIVE".equals(reader.getStatus())) {
-            throw new RuntimeException("Reader is already inactive");
+        if ("INACTIVE".equals(
+                reader.getStatus())) {
+
+            throw new RuntimeException(
+                    "Reader is already inactive"
+            );
         }
 
         reader.setStatus("INACTIVE");
 
-        libraryCardRepository.findByReaderId(id)
+        libraryCardRepository
+                .findByReaderId(id)
                 .ifPresent(card -> {
-                    card.setStatus(LibraryCard.CardStatus.INACTIVE);
+
+                    card.setStatus(
+                            LibraryCard.CardStatus.INACTIVE
+                    );
+
                     libraryCardRepository.save(card);
                 });
 
@@ -172,19 +238,31 @@ public class ReaderService {
     // Kích hoạt lại thẻ thành viên
     public Reader activateReader(Long id) {
 
-        Reader reader = readerRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Reader not found"));
+        Reader reader =
+                readerRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Reader not found"
+                                ));
 
-        if ("ACTIVE".equals(reader.getStatus())) {
-            throw new RuntimeException("Reader is already active");
+        if ("ACTIVE".equals(
+                reader.getStatus())) {
+
+            throw new RuntimeException(
+                    "Reader is already active"
+            );
         }
 
         reader.setStatus("ACTIVE");
 
-        libraryCardRepository.findByReaderId(id)
+        libraryCardRepository
+                .findByReaderId(id)
                 .ifPresent(card -> {
-                    card.setStatus(LibraryCard.CardStatus.ACTIVE);
+
+                    card.setStatus(
+                            LibraryCard.CardStatus.ACTIVE
+                    );
+
                     libraryCardRepository.save(card);
                 });
 
@@ -193,13 +271,20 @@ public class ReaderService {
 
     private String generateCardNumber() {
 
-        long nextId = libraryCardRepository.count() + 1;
+        long nextId =
+                libraryCardRepository.count() + 1;
 
         String cardNumber;
 
         do {
-            cardNumber = String.format("CARD-%06d", nextId++);
-        } while (libraryCardRepository.existsByCardNumber(cardNumber));
+            cardNumber = String.format(
+                    "CARD-%06d",
+                    nextId++
+            );
+        } while (
+                libraryCardRepository
+                        .existsByCardNumber(cardNumber)
+        );
 
         return cardNumber;
     }

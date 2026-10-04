@@ -12,13 +12,11 @@ import com.library.management.repository.PublisherRepository;
 import com.library.management.repository.ReaderRepository;
 import com.library.management.repository.RenewalPaymentRepository;
 import com.library.management.repository.UserRepository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Service
 public class DashboardService {
 
     private final BookRepository bookRepository;
@@ -61,23 +59,17 @@ public class DashboardService {
 
     public DashboardResponse getDashboard() {
 
-        long totalBooks =
-                bookRepository.count();
+        long totalBooks = bookRepository.count();
 
-        long totalBookQuantity =
-                bookRepository.sumTotalQuantity();
+        long totalBookQuantity = bookRepository.sumTotalQuantity();
 
-        long totalReaders =
-                readerRepository.count();
+        long totalReaders = readerRepository.count();
 
-        long totalAuthors =
-                authorRepository.count();
+        long totalAuthors = authorRepository.count();
 
-        long totalPublishers =
-                publisherRepository.count();
+        long totalPublishers = publisherRepository.count();
 
-        long totalCategories =
-                categoryRepository.count();
+        long totalCategories = categoryRepository.count();
 
         long activeBorrowings =
                 borrowingRepository.countByStatus("BORROWING");
@@ -100,11 +92,9 @@ public class DashboardService {
         long todayReturns =
                 borrowingDetailRepository.getTodayReturnedBooks();
 
-        /*
-         * ==========================================
-         * BORROWING REVENUE
-         * ==========================================
-         */
+        // ==============================
+        // BORROWING REVENUE
+        // ==============================
 
         long todayFineRevenue =
                 borrowingDetailRepository.getTodayFineRevenue();
@@ -116,7 +106,6 @@ public class DashboardService {
                 todayFineRevenue
                         + todayRenewalRevenue.longValue();
 
-
         long monthlyFineRevenue =
                 borrowingDetailRepository.getMonthlyFineRevenue();
 
@@ -127,12 +116,9 @@ public class DashboardService {
                 monthlyFineRevenue
                         + monthlyRenewalRevenue.longValue();
 
-
-        /*
-         * ==========================================
-         * LIBRARY CARD REVENUE
-         * ==========================================
-         */
+        // ==============================
+        // LIBRARY CARD REVENUE
+        // ==============================
 
         LocalDate today = LocalDate.now();
 
@@ -150,7 +136,6 @@ public class DashboardService {
 
         long todayLibraryCardRevenue =
                 todayCardRevenue.longValue();
-
 
         LocalDate firstDayOfMonth =
                 today.withDayOfMonth(1);
@@ -172,15 +157,9 @@ public class DashboardService {
         long monthlyLibraryCardRevenue =
                 monthlyCardRevenue.longValue();
 
-
-        /*
-         * ==========================================
-         * TOTAL ADMIN REVENUE
-         * ==========================================
-         *
-         * Borrowing revenue
-         * + Library card revenue
-         */
+        // ==============================
+        // TOTAL ADMIN REVENUE
+        // ==============================
 
         long todayRevenue =
                 todayBorrowingRevenue
@@ -189,7 +168,6 @@ public class DashboardService {
         long monthlyRevenue =
                 monthlyBorrowingRevenue
                         + monthlyLibraryCardRevenue;
-
 
         return new DashboardResponse(
                 totalBooks,

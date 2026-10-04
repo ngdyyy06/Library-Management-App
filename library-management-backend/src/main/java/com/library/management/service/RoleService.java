@@ -3,11 +3,9 @@ package com.library.management.service;
 import com.library.management.entity.Role;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.RoleRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class RoleService {
 
     private final RoleRepository roleRepository;
@@ -29,7 +27,9 @@ public class RoleService {
     public Role createRole(String name) {
 
         if (roleRepository.findAll().stream()
-                .anyMatch(role -> role.getName().equalsIgnoreCase(name))) {
+                .anyMatch(role ->
+                        role.getName().equalsIgnoreCase(name))) {
+
             throw new RuntimeException("Role already exists");
         }
 

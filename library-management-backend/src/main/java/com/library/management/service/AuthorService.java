@@ -5,11 +5,9 @@ import com.library.management.entity.Book;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.AuthorRepository;
 import com.library.management.repository.BookRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -85,29 +83,23 @@ public class AuthorService {
         }
 
         author.setStatus("ACTIVE");
+        Author savedAuthor = authorRepository.save(author);
 
         List<Book> books = bookRepository.findBooksByAuthorId(id);
 
-        // Kiểm tra tất cả author của Book đã ACTIVE chưa
         for (Book book : books) {
-
-            boolean allAuthorsActive = book.getAuthors()
-                    .stream()
-                    .allMatch(a -> "ACTIVE".equals(a.getStatus()));
+            // Kiểm tra: nếu là tác giả đang kích hoạt HOẶC tác giả khác đã ACTIVE
+            boolean allAuthorsActive = book.getAuthors().stream()
+                    .allMatch(a -> a.getId().equals(id) || "ACTIVE".equals(a.getStatus()));
 
             if (allAuthorsActive) {
-
                 book.setStatus("ACTIVE");
-
-                book.setAvailableQuantity(
-                        book.getTotalQuantity()
-                );
+                book.setAvailableQuantity(book.getTotalQuantity() != null ? book.getTotalQuantity() : 0);
             }
         }
 
         bookRepository.saveAll(books);
-
-        return authorRepository.save(author);
+        return savedAuthor;
     }
 
     public List<Book> getBooksByAuthor(Long id) {

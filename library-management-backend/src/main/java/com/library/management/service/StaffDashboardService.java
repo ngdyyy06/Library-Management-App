@@ -7,13 +7,11 @@ import com.library.management.repository.BorrowingRepository;
 import com.library.management.repository.LibraryCardPaymentRepository;
 import com.library.management.repository.ReaderRepository;
 import com.library.management.repository.RenewalPaymentRepository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Service
 public class StaffDashboardService {
 
     private final BookRepository bookRepository;

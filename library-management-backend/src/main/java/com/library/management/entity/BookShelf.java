@@ -1,7 +1,5 @@
 package com.library.management.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ public class BookShelf {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name="shelf_code", nullable = false, unique = true)
     private String shelfCode;
 
     @Column(nullable = false)
@@ -24,7 +22,6 @@ public class BookShelf {
     @Column(nullable = false)
     private String status;
 
-    @JsonIgnore
     @OneToMany(
             mappedBy = "shelf",
             cascade = CascadeType.ALL,
@@ -32,7 +29,6 @@ public class BookShelf {
     )
     private List<BookShelfAllocation> allocations = new ArrayList<>();
 
-    @JsonIgnoreProperties("defaultShelf")
     @ManyToMany
     @JoinTable(
             name = "book_shelf_categories",

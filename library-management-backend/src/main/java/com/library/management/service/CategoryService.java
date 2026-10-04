@@ -7,11 +7,9 @@ import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.BookRepository;
 import com.library.management.repository.BookShelfRepository;
 import com.library.management.repository.CategoryRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -59,7 +57,9 @@ public class CategoryService {
 
         return categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
     }
 
     // Cập nhật Category
@@ -67,10 +67,14 @@ public class CategoryService {
 
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         if (name == null || name.trim().isEmpty()) {
-            throw new RuntimeException("Category name cannot be empty");
+            throw new RuntimeException(
+                    "Category name cannot be empty"
+            );
         }
 
         String categoryName = name.trim();
@@ -78,7 +82,9 @@ public class CategoryService {
         if (!category.getName().equalsIgnoreCase(categoryName)
                 && categoryRepository.existsByNameIgnoreCase(categoryName)) {
 
-            throw new RuntimeException("Category already exists");
+            throw new RuntimeException(
+                    "Category already exists"
+            );
         }
 
         category.setName(categoryName);
@@ -91,10 +97,14 @@ public class CategoryService {
 
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         if ("INACTIVE".equals(category.getStatus())) {
-            throw new RuntimeException("Category is already inactive");
+            throw new RuntimeException(
+                    "Category is already inactive"
+            );
         }
 
         category.setStatus("INACTIVE");
@@ -107,10 +117,14 @@ public class CategoryService {
 
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         if ("ACTIVE".equals(category.getStatus())) {
-            throw new RuntimeException("Category is already active");
+            throw new RuntimeException(
+                    "Category is already active"
+            );
         }
 
         category.setStatus("ACTIVE");
@@ -123,32 +137,43 @@ public class CategoryService {
 
         categoryRepository.findById(categoryId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         return bookRepository.findByCategoriesId(categoryId);
     }
 
     // Gán Default Shelf cho Category
-    public Category assignDefaultShelf(Long categoryId, Long shelfId) {
+    public Category assignDefaultShelf(
+            Long categoryId,
+            Long shelfId) {
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         BookShelf shelf = bookShelfRepository.findById(shelfId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Shelf not found"));
+                        new ResourceNotFoundException(
+                                "Shelf not found"
+                        ));
 
         category.setDefaultShelf(shelf);
 
         return categoryRepository.save(category);
     }
 
+    // Xóa Default Shelf
     public Category removeDefaultShelf(Long categoryId) {
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Category not found"));
+                        new ResourceNotFoundException(
+                                "Category not found"
+                        ));
 
         if (category.getDefaultShelf() == null) {
             throw new RuntimeException(

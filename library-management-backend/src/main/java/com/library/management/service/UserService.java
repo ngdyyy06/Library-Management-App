@@ -8,62 +8,75 @@ import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.RoleRepository;
 import com.library.management.repository.StaffRepository;
 import com.library.management.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
     private final StaffRepository staffRepository;
+    private final PasswordService passwordService;
 
     public UserService(
             UserRepository userRepository,
             RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder,
-            StaffRepository staffRepository) {
+            StaffRepository staffRepository,
+            PasswordService passwordService) {
 
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
         this.staffRepository = staffRepository;
+        this.passwordService = passwordService;
     }
 
     public UserResponse createUser(CreateUserRequest request) {
 
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+        if (userRepository.existsByUsername(
+                request.getUsername())) {
+
+            throw new RuntimeException(
+                    "Username already exists"
+            );
         }
 
         if (request.getEmail() != null
-                && userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+                && userRepository.existsByEmail(
+                request.getEmail())) {
+
+            throw new RuntimeException(
+                    "Email already exists"
+            );
         }
 
-
-
-        Role role = roleRepository.findById(request.getRoleId())
+        Role role = roleRepository
+                .findById(request.getRoleId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found"));
+                        new ResourceNotFoundException(
+                                "Role not found"
+                        ));
 
         User user = new User();
 
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setPassword(
+                passwordService.encode(
+                        request.getPassword()
+                )
+        );
+
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setRole(role);
         user.setStatus("ACTIVE");
 
-        User savedUser = userRepository.save(user);
+        User savedUser =
+                userRepository.save(user);
 
         /*
-         * Nếu User có role LIBRARIAN thì tạo Staff profile
+         * Nếu User có role LIBRARIAN
+         * thì tạo Staff profile
          */
         if ("LIBRARIAN".equals(role.getName())) {
 
@@ -104,7 +117,9 @@ public class UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
         Staff staff = staffRepository
                 .findByUserId(user.getId())
@@ -114,15 +129,16 @@ public class UserService {
 
         if (staff != null) {
 
-            staffInfo = new UserDetailResponse.StaffInfo(
-                    staff.getId(),
-                    user.getFullName(),
-                    user.getEmail(),
-                    staff.getPhone(),
-                    staff.getAddress(),
-                    staff.getDateOfBirth(),
-                    user.getStatus()
-            );
+            staffInfo =
+                    new UserDetailResponse.StaffInfo(
+                            staff.getId(),
+                            user.getFullName(),
+                            user.getEmail(),
+                            staff.getPhone(),
+                            staff.getAddress(),
+                            staff.getDateOfBirth(),
+                            user.getStatus()
+                    );
         }
 
         return new UserDetailResponse(
@@ -143,27 +159,38 @@ public class UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
-        if (!user.getUsername().equals(request.getUsername())
+        if (!user.getUsername().equals(
+                request.getUsername())
                 && userRepository.existsByUsername(
                 request.getUsername())) {
 
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException(
+                    "Username already exists"
+            );
         }
 
         if (request.getEmail() != null
-                && !request.getEmail().equals(user.getEmail())
+                && !request.getEmail().equals(
+                user.getEmail())
                 && userRepository.existsByEmailAndIdNot(
                 request.getEmail(),
                 id)) {
 
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException(
+                    "Email already exists"
+            );
         }
 
-        Role role = roleRepository.findById(request.getRoleId())
+        Role role = roleRepository
+                .findById(request.getRoleId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found"));
+                        new ResourceNotFoundException(
+                                "Role not found"
+                        ));
 
         user.setUsername(request.getUsername());
         user.setFullName(request.getFullName());
@@ -174,7 +201,9 @@ public class UserService {
                 && !request.getPassword().isBlank()) {
 
             user.setPassword(
-                    passwordEncoder.encode(request.getPassword())
+                    passwordService.encode(
+                            request.getPassword()
+                    )
             );
         }
 
@@ -188,10 +217,15 @@ public class UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
         if ("INACTIVE".equals(user.getStatus())) {
-            throw new RuntimeException("User is already inactive");
+
+            throw new RuntimeException(
+                    "User is already inactive"
+            );
         }
 
         user.setStatus("INACTIVE");
@@ -206,10 +240,15 @@ public class UserService {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
         if ("ACTIVE".equals(user.getStatus())) {
-            throw new RuntimeException("User is already active");
+
+            throw new RuntimeException(
+                    "User is already active"
+            );
         }
 
         user.setStatus("ACTIVE");
@@ -219,22 +258,27 @@ public class UserService {
         );
     }
 
-    @Transactional
     public Staff updateMyStaffProfile(
             String username,
             UpdateStaffProfileRequest request) {
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository
+                .findByUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
-        if (!"LIBRARIAN".equals(user.getRole().getName())) {
+        if (!"LIBRARIAN".equals(
+                user.getRole().getName())) {
+
             throw new RuntimeException(
                     "This profile is only available for staff"
             );
         }
 
-        Staff staff = staffRepository.findByUserId(user.getId())
+        Staff staff = staffRepository
+                .findByUserId(user.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Staff profile not found"
@@ -243,42 +287,63 @@ public class UserService {
         // Check email
         if (request.getEmail() != null
                 && !request.getEmail().isBlank()
-                && !request.getEmail().equals(user.getEmail())
+                && !request.getEmail().equals(
+                user.getEmail())
                 && userRepository.existsByEmailAndIdNot(
                 request.getEmail(),
                 user.getId())) {
 
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException(
+                    "Email already exists"
+            );
         }
 
-        // Update profile information
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
+        // Update profile
+        user.setFullName(
+                request.getFullName()
+        );
 
-        staff.setPhone(request.getPhone());
-        staff.setAddress(request.getAddress());
-        staff.setDateOfBirth(request.getDateOfBirth());
+        user.setEmail(
+                request.getEmail()
+        );
 
-        /*
-         * Change password
-         *
-         * Nếu cả 3 field đều trống -> không đổi password.
-         */
-        String currentPassword = request.getCurrentPassword();
-        String newPassword = request.getNewPassword();
-        String confirmPassword = request.getConfirmPassword();
+        staff.setPhone(
+                request.getPhone()
+        );
+
+        staff.setAddress(
+                request.getAddress()
+        );
+
+        staff.setDateOfBirth(
+                request.getDateOfBirth()
+        );
+
+        String currentPassword =
+                request.getCurrentPassword();
+
+        String newPassword =
+                request.getNewPassword();
+
+        String confirmPassword =
+                request.getConfirmPassword();
 
         boolean hasCurrentPassword =
-                currentPassword != null && !currentPassword.isBlank();
+                currentPassword != null
+                        && !currentPassword.isBlank();
 
         boolean hasNewPassword =
-                newPassword != null && !newPassword.isBlank();
+                newPassword != null
+                        && !newPassword.isBlank();
 
         boolean hasConfirmPassword =
-                confirmPassword != null && !confirmPassword.isBlank();
+                confirmPassword != null
+                        && !confirmPassword.isBlank();
 
         boolean changingPassword =
-                hasCurrentPassword || hasNewPassword || hasConfirmPassword;
+                hasCurrentPassword
+                        || hasNewPassword
+                        || hasConfirmPassword;
 
         if (changingPassword) {
 
@@ -288,12 +353,13 @@ public class UserService {
                     || !hasConfirmPassword) {
 
                 throw new RuntimeException(
-                        "Please enter current password, new password and confirm password"
+                        "Please enter current password, " +
+                                "new password and confirm password"
                 );
             }
 
             // Kiểm tra password hiện tại
-            if (!passwordEncoder.matches(
+            if (!passwordService.matches(
                     currentPassword,
                     user.getPassword())) {
 
@@ -302,33 +368,40 @@ public class UserService {
                 );
             }
 
-            // Kiểm tra password mới và confirm password
-            if (!newPassword.equals(confirmPassword)) {
+            // Kiểm tra password mới
+            if (!newPassword.equals(
+                    confirmPassword)) {
+
                 throw new RuntimeException(
-                        "New password and confirm password do not match"
+                        "New password and confirm password " +
+                                "do not match"
                 );
             }
 
             // Password tối thiểu 6 ký tự
             if (newPassword.length() < 6) {
+
                 throw new RuntimeException(
                         "New password must be at least 6 characters"
                 );
             }
 
             // Không cho đổi thành password cũ
-            if (passwordEncoder.matches(
+            if (passwordService.matches(
                     newPassword,
                     user.getPassword())) {
 
                 throw new RuntimeException(
-                        "New password must be different from current password"
+                        "New password must be different " +
+                                "from current password"
                 );
             }
 
             // Encode password mới
             user.setPassword(
-                    passwordEncoder.encode(newPassword)
+                    passwordService.encode(
+                            newPassword
+                    )
             );
         }
 
@@ -339,17 +412,23 @@ public class UserService {
 
     public Staff getMyStaffProfile(String username) {
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository
+                .findByUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
 
-        if (!"LIBRARIAN".equals(user.getRole().getName())) {
+        if (!"LIBRARIAN".equals(
+                user.getRole().getName())) {
+
             throw new RuntimeException(
                     "This profile is only available for staff"
             );
         }
 
-        return staffRepository.findByUserId(user.getId())
+        return staffRepository
+                .findByUserId(user.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Staff profile not found"

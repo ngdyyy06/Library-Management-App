@@ -1,0 +1,170 @@
+/* ==========================================================================
+   CLASSIC & LUXURY LOGIN THEME (JavaFX CSS)
+   Bảng màu: Nâu gỗ gụ sẫm (#27160E) & Kem ngà (#F8F3EB) & Vàng kim đồng (#C5A059)
+   ========================================================================== */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* ==========================================================================
+   LEFT PANEL (Cổ điển, trang trọng như bìa sách da thật)
+   ========================================================================== */
+
+.brand-panel {
+    -fx-background-color: #27160E; /* Nâu gỗ gụ sâu thẳm */
+    -fx-border-color: #3D2316;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* Con dấu triện cổ điển (Seal Monogram) */
+.logo-seal {
+    -fx-background-color: transparent;
+    -fx-border-color: #C5A059; /* Viền vàng kim đồng */
+    -fx-border-width: 1.5;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 44px;
+    -fx-pref-height: 44px;
+    -fx-max-width: 44px;
+    -fx-max-height: 44px;
+}
+
+.logo-monogram {
+    -fx-font-family: "Georgia", "Palatino Linotype", serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #C5A059;
+}
+
+.brand-title {
+    -fx-font-family: "Georgia", "Palatino Linotype", serif;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFF7EC;
+    -fx-letter-spacing: 2px;
+}
+
+.brand-subtitle {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #B89C82;
+    -fx-letter-spacing: 1.8px;
+}
+
+.brand-divider {
+    -fx-background-color: #4A2D1C;
+    -fx-pref-height: 1px;
+    -fx-max-height: 1px;
+}
+
+.brand-description {
+    -fx-font-family: "Georgia", serif;
+    -fx-font-size: 13.5px;
+    -fx-font-style: italic;
+    -fx-text-fill: #C8B29E;
+    -fx-line-spacing: 4px;
+}
+
+.brand-est {
+    -fx-font-size: 9.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7F5F45;
+    -fx-letter-spacing: 1.5px;
+    -fx-padding: 10 0 0 0;
+}
+
+/* ==========================================================================
+   RIGHT PANEL (Không gian sáng sạch, màu giấy Parchment thanh lịch)
+   ========================================================================== */
+
+.login-right-container {
+    -fx-background-color: #F8F3EB; /* Nền giấy ngà cổ điển */
+}
+
+.login-panel {
+    -fx-background-color: transparent;
+}
+
+.login-title {
+    -fx-font-family: "Georgia", "Palatino Linotype", serif;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27160E;
+}
+
+.login-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7C6856;
+}
+
+/* ==========================================================================
+   FORM INPUTS & LABELS
+   ========================================================================== */
+
+.field-label {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A4030;
+    -fx-letter-spacing: 1px;
+}
+
+.custom-text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DECDB8;
+    -fx-border-width: 1;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 10 14;
+    -fx-font-size: 13px;
+    -fx-text-fill: #27160E;
+    -fx-prompt-text-fill: #AFA292;
+}
+
+.custom-text-field:focused {
+    -fx-border-color: #C5A059; /* Viền ánh vàng khi active */
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(197, 160, 89, 0.2), 6, 0, 0, 1);
+}
+
+/* ==========================================================================
+   LOGIN BUTTON (Nâu gụ lịch lãm, tối giản)
+   ========================================================================== */
+
+.login-button {
+    -fx-background-color: #27160E;
+    -fx-text-fill: #F8F3EB;
+    -fx-font-size: 12.5px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1.5px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-border-color: #C5A059;
+    -fx-border-width: 0.8;
+    -fx-border-radius: 4px;
+}
+
+.login-button:hover {
+    -fx-background-color: #3E2316;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(39, 22, 14, 0.25), 8, 0, 0, 2);
+}
+
+.login-button:pressed {
+    -fx-background-color: #1A0D07;
+}
+
+/* ==========================================================================
+   STATUS & FOOTER
+   ========================================================================== */
+
+.message-label {
+    -fx-text-fill: #A03C26;
+    -fx-font-size: 12px;
+}
+
+.footer-text {
+    -fx-text-fill: #AFA292;
+    -fx-font-size: 11px;
+    -fx-alignment: CENTER;
+}
