@@ -32,7 +32,7 @@ echo.
 call library-management-backend\mvnw.cmd ^
     -f library-management-backend\pom.xml ^
     org.codehaus.mojo:exec-maven-plugin:3.5.0:java ^
-    -Dexec.mainClass=com.library.management.LibraryManagementLauncher ^
+    -Dexec.mainClass=com.library.management.Main ^
     -Dexec.classpathScope=runtime
 
 echo.
