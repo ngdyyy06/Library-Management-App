@@ -1,599 +1,1040 @@
-# Library Management System
+📚 Library Management System
 
-A web-based Library Management System designed to support library staff and administrators in managing books, book copies, readers, borrowing, returning, library cards, payments, and user accounts.
+Desktop application for managing a library, built with Java 21, JavaFX, Maven, Hibernate and MySQL.
 
-## 1. Introduction
+Application type: JavaFX Desktop Application
+Architecture: Layered Architecture
+UI: Custom JavaFX CSS — Atelier style
+Main class: com.library.management.Main
 
-The Library Management System is developed to digitalize and simplify common library management operations.
+📑 Table of Contents
 
-The system provides separate access permissions for **Admin** and **Staff** users. Administrators can manage the system and access management information, while Staff users focus on day-to-day library operations.
+1. Overview
 
-The system consists of a **Spring Boot backend**, **Next.js frontend**, and **MySQL database**.
+2. Features
 
----
+3. Technologies
 
-## 2. Features
+4. Architecture
 
-### Authentication & Authorization
+5. Project Structure
 
-* User login
-* User registration
-* JWT-based authentication
-* Role-based authorization
-* Password encryption using BCrypt
-* Separate permissions for Admin and Staff
+6. Requirements
 
-### User Management
+7. Database Configuration
 
-* Create users
-* View users
-* Update users
-* Manage user roles
-* Activate/deactivate user accounts
-* Manage account status
+8. Run the Application
 
-### Reader Management
+9. Build the Project
 
-* Create readers
-* View reader information
-* Update reader information
-* Search and manage readers
-* Manage reader status
-* Validate duplicate reader codes
+10. Package as Windows Application
 
-### Book Management
+11. Authentication and Authorization
 
-* Manage books
-* Manage book information
-* Manage book copies
-* Track book copy status
-* Manage book inventory
+12. Borrowing and Returning
 
-### Book Shelf Management
+13. Fine Calculation
 
-* Manage library shelves
-* Assign books to shelves
-* Manage shelf categories
-* Check shelf capacity
+14. UI Design
 
-### Borrowing Management
+15. Error Handling
 
-* Create borrowing records
-* Manage borrowed books
-* Track borrowing status
-* Renew borrowing periods
-* Return books
-* Handle partially returned borrowings
-* Calculate overdue fines
+16. Development Workflow
 
-### Library Card Management
+17. Troubleshooting
 
-* Create and manage library cards
-* Manage library card status
-* Track card information
-* Manage card-related payments
+18. Future Improvements
 
-### Payment Management
+19. License
 
-* Record library card payments
-* Manage payment information
-* Track payment history
-* Calculate applicable fees
+1. Overview
 
-### Revenue Management
+Library Management System is a desktop application developed to support daily library management operations.
 
-* View library revenue information
-* View revenue generated from applicable payments
+The system provides functionality for:
 
-Revenue information is available to authorized Admin users and is not displayed to Staff users.
+User authentication
 
----
+Role-based authorization
 
-## 3. User Roles
+User management
 
-The system currently provides two main roles:
+Book management
 
-| Role    | Description                                                                                   |
-| ------- | --------------------------------------------------------------------------------------------- |
-| `ADMIN` | Manages the system and has access to administrative functions, including revenue information. |
-| `STAFF` | Handles daily library operations but does not have access to revenue information.             |
+Author management
 
-Access to APIs and frontend pages is controlled based on the authenticated user's role.
-
----
-
-## 4. Business Rules
-
-The system implements several important library business rules:
-
-* A reader can borrow a maximum of **5 book copies** at a time.
-* Only available book copies can be borrowed.
-* When a book copy is returned, its status is changed back to `AVAILABLE`.
-* The available quantity of a book is updated when copies are borrowed or returned.
-* Borrowing records can be renewed.
-* A borrowing can be fully or partially returned.
-* Overdue books generate a fine based on the number of overdue days.
-* The overdue fine is calculated at **5,000 VND per overdue day**.
-* Reader codes must be unique.
-* User roles determine access to protected resources.
-* Staff users cannot access revenue information.
-
----
-
-## 5. Technologies
-
-### Backend
-
-* Java 21
-* Spring Boot
-* Spring Data JPA
-* Spring Security
-* JWT
-* Maven
-* BCrypt Password Encoder
-
-### Frontend
-
-* Next.js
-* React
-* TypeScript
-* CSS
-
-### Database
-
-* MySQL
-
-### Development & Testing Tools
-
-* IntelliJ IDEA
-* Visual Studio Code
-* MySQL / XAMPP
-* Postman
-* Git
-* GitHub
-
----
-
-## 6. System Architecture
-
-The application follows a client-server architecture.
-
-```text
-┌─────────────────────────────┐
-│          Frontend           │
-│       Next.js / React       │
-└──────────────┬──────────────┘
-               │ HTTP / REST API
-               ▼
-┌─────────────────────────────┐
-│          Backend            │
-│       Spring Boot           │
-│                             │
-│ Controller                  │
-│ Service                     │
-│ Repository                  │
-│ Security / JWT              │
-│ Exception Handling          │
-└──────────────┬──────────────┘
-               │ JPA / Hibernate
-               ▼
-┌─────────────────────────────┐
-│          Database           │
-│           MySQL             │
-└─────────────────────────────┘
-```
-
----
-
-## 7. Project Structure
-
-### Backend
-
-The backend is organized following a layered architecture:
-
-```text
-src/
-└── main/
-    ├── java/
-    │   └── com/
-    │       └── library/
-    │           └── management/
-    │               ├── controller/
-    │               ├── dto/
-    │               ├── entity/
-    │               ├── exception/
-    │               ├── repository/
-    │               ├── security/
-    │               ├── service/
-    │               └── ...
-    │
-    └── resources/
-        └── application.properties
-```
-
-### Main packages
-
-| Package      | Responsibility                                                        |
-| ------------ | --------------------------------------------------------------------- |
-| `controller` | Handles HTTP requests and exposes REST APIs.                          |
-| `service`    | Contains application and business logic.                              |
-| `repository` | Provides database access using Spring Data JPA.                       |
-| `entity`     | Defines database entities and their relationships.                    |
-| `dto`        | Defines objects used to transfer data between the client and server.  |
-| `security`   | Handles authentication, JWT processing, and authorization.            |
-| `exception`  | Handles application errors and provides standardized error responses. |
-
----
-
-## 8. Main Entities
-
-The system contains several entities representing the main library operations:
-
-* User
-* Reader
-* Book
-* Book Copy
-* Book Shelf
-* Borrowing
-* Library Card
-* Library Card Payment
-
-These entities are connected through relationships that represent the actual operations of a library.
-
----
-
-## 9. Database
-
-The project uses **MySQL** as the database management system.
-
-Database name:
-
-```text
-library_management
-```
-
-The database stores information related to:
-
-* Users
-* Readers
-* Books
-* Book copies
-* Book shelves
-* Borrowings
-* Library cards
-* Payments
-
----
-
-## 10. Backend Configuration
-
-Database connection settings are configured in:
-
-```text
-src/main/resources/application.properties
-```
+Category management
+
+Library card management
+
+Borrowing management
+
+Book returns
+
+Fine calculation
+
+Receipt management
+
+Revenue statistics
+
+Search and validation
+
+Windows desktop packaging
+
+The application is a JavaFX desktop application and does not require a web browser.
+
+2. Features
+
+🔐 Authentication
+
+Login with username and password
+
+BCrypt password verification
+
+Required-field validation
+
+Invalid-login validation
+
+Logout
+
+Navigation between Login and Dashboard
+
+👥 User Management
+
+Administrators can:
+
+Add users
+
+Edit users
+
+Delete users
+
+Search users
+
+Activate/deactivate users
+
+Assign roles
+
+Validate usernames
+
+Validate email addresses
+
+Prevent duplicate usernames
+
+Prevent duplicate email addresses
+
+The Reader role is not exposed as an option in the administrator user form.
+
+📚 Book Management
+
+Book management includes:
+
+Add books
+
+Edit books
+
+Delete books
+
+Search books
+
+Manage ISBN
+
+Manage price
+
+Manage authors
+
+Manage categories
+
+Manage book copies
+
+Track book availability/status
+
+Validate duplicate ISBN
+
+✍️ Author Management
+
+Add author
+
+Edit author
+
+Delete/deactivate author
+
+Search author
+
+Manage book-author relationships
+
+🗂️ Category Management
+
+Add category
+
+Edit category
+
+Delete category
+
+Search category
+
+Confirmation before deletion
+
+Validation before deleting data
+
+💳 Library Card Management
+
+Create library cards
+
+Manage card information
+
+Track card status
+
+Search library cards
+
+Manage library-card related revenue
+
+📖 Borrowing Management
+
+Create borrowing records
+
+Select books/copies
+
+Track borrowing dates
+
+Track due dates
+
+Manage deposits
+
+View borrowing details
+
+Search borrowing records
+
+Print borrowing information when permitted
+
+Track borrowing status
+
+Supported statuses:
+
+BORROWING
+PARTIALLY_RETURNED
+OVERDUE
+RETURNED
+
+🔄 Returning Books
+
+When books are returned, staff can select the condition of each returned copy.
+
+Available conditions:
+
+Condition
+
+Meaning
+
+GOOD
+
+Returned normally
+
+DAMAGED
+
+Book is damaged
+
+LOST
+
+Book is lost
+
+The system calculates applicable fines from book condition and overdue days.
+
+💰 Fine Management
+
+The system supports:
+
+Damage fines
+
+Lost-book fines
+
+Late-return fines
+
+Total fine calculation
+
+Deposit comparison
+
+Refund calculation
+
+Additional payment calculation where applicable
+
+Fine/revenue statistics
+
+🧾 Receipt Management
+
+Create receipt information
+
+Manage receipt codes
+
+Validate duplicate receipt codes
+
+Display business errors using custom Atelier dialogs
+
+📊 Dashboard & Revenue
+
+Dashboard statistics include:
+
+Today's revenue
+
+Monthly revenue
+
+Fine revenue
+
+Renewal revenue
+
+Library-card revenue
+
+Total revenue
+
+Library statistics
+
+3. Technologies
+
+Technology
+
+Purpose
+
+Java 21
+
+Main programming language
+
+JavaFX
+
+Desktop GUI
+
+Maven
+
+Build and dependency management
+
+Hibernate ORM
+
+Persistence / ORM
+
+MySQL
+
+Relational database
+
+jBCrypt
+
+Password hashing
+
+Jakarta Validation
+
+Data validation
+
+Lombok
+
+Reduce boilerplate
+
+Ikonli
+
+JavaFX icons
+
+FontAwesome 5
+
+Icon set
+
+Git / GitHub
+
+Version control
+
+jpackage
+
+Windows application packaging
+
+Development environment:
+
+Windows 11
+
+IntelliJ IDEA
+
+PowerShell
+
+Maven Wrapper
+
+4. Architecture
+
+The application follows a layered architecture:
+
+┌──────────────────────────────┐
+│            VIEW              │
+│          JavaFX UI           │
+└──────────────┬───────────────┘
+│
+▼
+┌──────────────────────────────┐
+│          SERVICE             │
+│        Business Logic        │
+└──────────────┬───────────────┘
+│
+▼
+┌──────────────────────────────┐
+│         REPOSITORY           │
+│       Database Access        │
+└──────────────┬───────────────┘
+│
+▼
+┌──────────────────────────────┐
+│          HIBERNATE           │
+│             ORM              │
+└──────────────┬───────────────┘
+│
+▼
+┌──────────────────────────────┐
+│            MYSQL             │
+└──────────────────────────────┘
+
+View Layer
+
+Responsible for:
+
+JavaFX screens
+
+Forms
+
+Tables
+
+Dialogs
+
+Navigation
+
+User interaction
+
+Service Layer
+
+Responsible for:
+
+Business rules
+
+Validation
+
+Authentication
+
+Borrowing
+
+Returning
+
+Fine calculation
+
+Revenue calculation
+
+Repository Layer
+
+Responsible for:
+
+CRUD operations
+
+Database queries
+
+Hibernate sessions
+
+Persistence
+
+Entity Layer
+
+Represents database entities such as:
+
+User
+
+Role
+
+Book
+
+Author
+
+Category
+
+Borrowing
+
+Library Card
+
+Receipt
+
+Configuration Layer
+
+Contains:
+
+Hibernate configuration
+
+Database configuration
+
+Persistence initialization
+
+5. Project Structure
+
+library-management/
+│
+├── .idea/
+│
+├── library-management-backend/
+│   │
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   └── resources/
+│   │   │       ├── css/
+│   │   │       │   ├── login.css
+│   │   │       │   └── dashboard.css
+│   │   │       ├── images/
+│   │   │       └── hibernate.properties
+│   │   │
+│   │   └── test/
+│   │
+│   ├── pom.xml
+│   └── mvnw.cmd
+│
+├── LibraryManagement.ico
+├── start-app.bat
+├── start-app.vbs
+├── README.md
+└── dist/
+
+Main Java package:
+
+com.library.management
+
+Main entry point:
+
+com.library.management.Main
+
+6. Requirements
+
+Install the following:
+
+Windows 10/11
+
+JDK 21
+
+MySQL Server
+
+Git
+
+IntelliJ IDEA or another Java IDE
+
+Maven does not need to be installed globally because the project uses Maven Wrapper.
+
+Check Java:
+
+java -version
+
+Check compiler:
+
+javac -version
+
+Check Maven Wrapper:
+
+.\library-management-backend\mvnw.cmd -version
+
+The application is developed with Java 21.
+
+7. Database Configuration
+
+The application uses MySQL through Hibernate.
+
+Database configuration is located at:
+
+library-management-backend/src/main/resources/hibernate.properties
 
 Example:
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/library_management
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
+hibernate.connection.driver_class=com.mysql.cj.jdbc.Driver
+hibernate.connection.url=jdbc:mysql://localhost:3306/library_management
+hibernate.connection.username=YOUR_USERNAME
+hibernate.connection.password=YOUR_PASSWORD
 
-Replace the database username and password with the credentials configured on the local development environment.
+Replace these values with your local MySQL configuration.
 
----
+Security: Never commit real database passwords, API keys or other secrets to GitHub.
 
-## 11. Requirements
+8. Run the Application
 
-Before running the project, install the following:
+Option 1 — Project launcher
 
-* JDK 21 or later
-* Maven
-* MySQL
-* Node.js
-* npm
-* Git
+From the project root:
 
-Recommended development tools:
+.\start-app.bat
 
-* IntelliJ IDEA
-* Visual Studio Code
-* Postman
-* XAMPP
+The launcher starts:
 
----
+com.library.management.Main
 
-## 12. Installation
+Option 2 — Maven
 
-### Step 1: Clone the repository
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+org.codehaus.mojo:exec-maven-plugin:3.5.0:java `
+    -Dexec.mainClass=com.library.management.Main `
+-Dexec.classpathScope=runtime
 
-```bash
-git clone <repository-url>
-```
+Option 3 — IntelliJ IDEA
 
-### Step 2: Open the backend project
+Open the project as a Maven project and run:
 
-Open the backend project using IntelliJ IDEA or another Java IDE.
+com.library.management.Main
 
-### Step 3: Create the database
+9. Build the Project
 
-Create a MySQL database:
+Compile
 
-```sql
-CREATE DATABASE library_management;
-```
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean compile
 
-### Step 4: Configure the database
+Package
 
-Update the database connection information in:
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean package
 
-```text
-application.properties
-```
+Generated JAR:
 
-### Step 5: Install frontend dependencies
+library-management-backend/target/library-management-1.0.0.jar
 
-Open the frontend project directory and run:
+10. Package as Windows Application
 
-```bash
-npm install
-```
+The application can be packaged with Java jpackage.
 
----
+Step 1 — Build
 
-## 13. Running the Backend
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean package
 
-From the backend project directory, run:
+Step 2 — Remove previous package
 
-```bash
-mvn spring-boot:run
-```
+Remove-Item .\dist -Recurse -Force
 
-Alternatively, run the main Spring Boot application from IntelliJ IDEA.
+Step 3 — Create Windows application image
 
-The backend API is available at:
+& "C:\Program Files\OpenLogic\jdk-21.0.11.10-hotspot\bin\jpackage.exe" `
+    --type app-image `
+--name "LibraryManagement" `
+    --input ".\library-management-backend\target" `
+--main-jar "library-management-1.0.0.jar" `
+    --main-class "com.library.management.Main" `
+--icon ".\LibraryManagement.ico" `
+--dest ".\dist"
 
-```text
-http://localhost:8080
-```
+Output:
 
----
+dist/
+└── LibraryManagement/
+├── LibraryManagement.exe
+├── app/
+└── runtime/
 
-## 14. Running the Frontend
+Run:
 
-From the frontend project directory:
+.\dist\LibraryManagement\LibraryManagement.exe
 
-```bash
-npm install
-```
+Development vs Release
 
-Then start the development server:
+For development:
 
-```bash
-npm run dev
-```
+start-app.bat
 
-The frontend application is available at:
+For the packaged application:
 
-```text
-http://localhost:3000
-```
+dist/LibraryManagement/LibraryManagement.exe
 
----
+The packaged application remains a JavaFX desktop application.
 
-## 15. API Overview
+11. Authentication and Authorization
 
-The backend provides REST APIs for the main system modules.
+Authentication flow:
 
-### Authentication
-
-```text
-POST /api/auth/login
-POST /api/auth/register
-```
-
-### Users
-
-```text
-/api/users/**
-```
-
-User APIs are protected and require appropriate authorization.
-
-### Readers
-
-```text
-GET    /api/readers
-POST   /api/readers
-GET    /api/readers/{id}
-PUT    /api/readers/{id}
-```
-
-### Borrowings
-
-The borrowing module provides APIs for:
-
-* Creating borrowings
-* Viewing borrowing records
-* Renewing borrowings
-* Returning books
-* Managing borrowing status
-
-Example renewal endpoint:
-
-```text
-PATCH /api/borrowings/{id}/renew
-```
-
----
-
-## 16. Authentication & Security
-
-The application uses **Spring Security** for authentication and authorization.
-
-JWT is used to authenticate API requests after login.
-
-The authentication flow is:
-
-```text
-User
-  │
-  ▼
-Login
-  │
-  ▼
-Spring Security
-  │
-  ▼
+┌─────────────┐
+│    Login    │
+└──────┬──────┘
+│
+▼
 Validate username/password
-  │
-  ▼
-Generate JWT
-  │
-  ▼
-Client stores JWT
-  │
-  ▼
-JWT sent with subsequent requests
-  │
-  ▼
-JWT Filter validates token
-  │
-  ▼
-Authorize request based on role
-```
+│
+▼
+Authenticate user
+│
+▼
+Check role/permissions
+│
+▼
+Open Dashboard
 
-Passwords are encrypted using `BCryptPasswordEncoder`.
+Passwords are verified using BCrypt.
 
-Protected endpoints require an authenticated user and may require a specific role.
+Password flow:
 
----
+Password
+│
+▼
+BCrypt
+│
+▼
+Password Hash
+│
+▼
+Database
 
-## 17. Error Handling
+The application does not need to store passwords as plain text.
 
-The backend provides centralized exception handling using Spring's `@RestControllerAdvice`.
+12. Borrowing and Returning
 
-Validation errors and application exceptions are returned using a standardized error response.
+Borrowing statuses
 
-Example structure:
+BORROWING
+PARTIALLY_RETURNED
+OVERDUE
+RETURNED
 
-```json
-{
-    "status": 400,
-    "message": "Reader code already exists"
-}
-```
+Borrowing
 
-This allows the frontend to display meaningful error messages to users.
+The system tracks:
 
----
+Borrowing record
 
-## 18. Testing
+Selected book/copy
 
-The REST APIs can be tested using **Postman**.
+Borrowing date
 
-Testing covers major system operations such as:
+Due date
 
-* Login
-* User management
-* Reader management
-* Book management
-* Book copy management
-* Borrowing
-* Book renewal
-* Returning books
-* Library card management
-* Payment management
-* Authorization
+Deposit
 
-Example reader API test:
+Current status
 
-```text
-POST /api/readers
-```
+Returning
 
-The system validates business rules such as duplicate reader codes and returns an appropriate HTTP status and error message when validation fails.
+For each returned copy, staff can select:
 
----
+GOOD
+DAMAGED
+LOST
 
-## 19. Frontend
+Printing
 
-The frontend provides a web interface for library administrators and staff.
+Borrowing information can be printed while the borrowing record is active.
 
-Main interface areas include:
+For:
 
-* Login
-* Dashboard
-* User Management
-* Reader Management
-* Book Management
-* Book Shelf Management
-* Borrowing Management
-* Library Card Management
-* Payment Management
+RETURNED
 
-The interface displays different functions according to the authenticated user's role.
+the print function is unavailable.
 
-For example, revenue information is available to Admin users but is not displayed to Staff users.
+13. Fine Calculation
 
----
+Condition fine
 
-## 20. Project Workflow
+Condition
 
-A typical library borrowing workflow is:
+Fine
 
-```text
-Reader
-  │
-  ▼
-Select Book
-  │
-  ▼
-Check Book Availability
-  │
-  ▼
-Create Borrowing
-  │
-  ▼
-Book Copy → BORROWED
-  │
-  ▼
-Reader keeps the book
-  │
-  ├── Renew
-  │
-  └── Return
-        │
-        ▼
-   Book Copy → AVAILABLE
-        │
-        ▼
-Calculate overdue fine if applicable
-```
+GOOD
 
----
+0 VND
 
-## 21. Development Purpose
+DAMAGED
 
-This project is developed for educational purposes to apply knowledge of:
+50,000 VND / copy
 
-* Java programming
-* Spring Boot
-* REST API development
-* Spring Security
-* JWT authentication
-* Database design
-* MySQL
-* JPA / Hibernate
-* Frontend development
-* Role-based authorization
-* Software testing
-* Git and GitHub
+LOST
 
----
+Book price
 
-## 22. License
+Late-return fine
 
-This project is developed for educational purposes.
+5,000 VND / overdue day
+
+Total fine
+
+Total Fine
+=
+Condition Fine
++
+Late Fine
+
+Refund
+
+The deposit is compared with the calculated fine:
+
+Refund
+=
+max(0, Deposit - Total Fine)
+
+If the total fine exceeds the deposit, the remaining amount can be treated as an additional amount due.
+
+14. UI Design
+
+The application uses a custom Atelier design language.
+
+Design direction
+
+Classic Library
++
+Vintage
++
+Premium Desktop UI
+
+Color palette
+
+The interface is based on:
+
+Mahogany / dark brown
+
+Parchment cream
+
+Antique gold
+
+Warm beige
+
+Deep brown
+
+Typography
+
+Primary fonts include:
+
+Georgia
+
+Palatino
+
+Segoe UI
+
+UI characteristics
+
+Rounded panels
+
+Subtle shadows
+
+Consistent spacing
+
+Custom JavaFX CSS
+
+Styled tables
+
+Custom dialogs
+
+Consistent buttons
+
+Desktop-oriented layouts
+
+The UI is written directly using JavaFX and CSS.
+
+Scene Builder is not required.
+
+15. Error Handling
+
+Business errors use custom Atelier-themed dialogs instead of the default JavaFX appearance.
+
+Examples:
+
+Invalid username/password
+
+Empty required fields
+
+Duplicate username
+
+Duplicate email
+
+Duplicate ISBN
+
+Duplicate receipt code
+
+Invalid business operation
+
+Other validation errors
+
+This keeps error messages consistent with the application's visual design.
+
+16. Development Workflow
+
+Recommended workflow:
+
+1. Modify code
+
+Java source:
+
+library-management-backend/src/main/java/
+
+Resources:
+
+library-management-backend/src/main/resources/
+
+2. Compile
+
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean compile
+
+3. Run
+
+.\start-app.bat
+
+4. Test
+
+Check:
+
+UI
+
+Validation
+
+Database changes
+
+Business logic
+
+Error handling
+
+Navigation
+
+5. Package
+
+When the application is ready:
+
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean package
+
+Then regenerate the packaged Windows application using jpackage.
+
+17. Troubleshooting
+
+Java is not recognized
+
+Run:
+
+java -version
+
+Then:
+
+where java
+
+Verify that JAVA_HOME points to JDK 21.
+
+Example:
+
+C:\Program Files\OpenLogic\jdk-21.0.11.10-hotspot
+
+Maven is not recognized
+
+Use Maven Wrapper:
+
+.\library-management-backend\mvnw.cmd -version
+
+Application does not start
+
+Compile first:
+
+.\library-management-backend\mvnw.cmd `
+    -f .\library-management-backend\pom.xml `
+clean compile
+
+Then:
+
+.\start-app.bat
+
+Check the terminal output for the actual exception.
+
+JAR not found when using jpackage
+
+Check:
+
+Get-ChildItem .\library-management-backend\target\*.jar
+
+Current JAR:
+
+library-management-1.0.0.jar
+
+The --main-jar argument must exactly match the generated JAR name.
+
+Icon does not change
+
+There are two important icon locations.
+
+JavaFX window icon
+
+The JavaFX application loads its icon from:
+
+src/main/resources/images/
+
+Example:
+
+LibraryManagement.png
+
+Windows packaged application icon
+
+jpackage uses:
+
+LibraryManagement.ico
+
+with:
+
+--icon ".\LibraryManagement.ico"
+
+After changing the icon, rebuild the package:
+
+Remove-Item .\dist -Recurse -Force
+
+Then run jpackage again.
+
+Windows may cache icons. Restarting Windows Explorer or Windows may be necessary if an old icon remains visible.
+
+18. Future Improvements
+
+Possible future improvements:
+
+PDF reports
+
+Excel export
+
+More advanced statistics
+
+Automatic database backup
+
+Fine-payment history
+
+Notification system
+
+Advanced book filtering
+
+Barcode / QR-code support
+
+Book cover management
+
+Import/export data
+
+More granular permissions
+
+Audit logs
+
+Automated unit/integration testing
+
+Windows installer (.msi)
+
+Application update mechanism
+
+19. License
+
+This project is developed for educational and project purposes.
+
+Third-party libraries and assets remain subject to their respective licenses.
+
+👨‍💻 Project Information
+
+Library Management System
+
+Built with:
+
+Java 21
+JavaFX
+Maven
+Hibernate
+MySQL
+
+Main class:
+
+com.library.management.Main
+
+Packaged application:
+
+LibraryManagement.exe
+
+Project type:
+
+JavaFX Desktop Application

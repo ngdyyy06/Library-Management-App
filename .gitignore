@@ -1,1 +1,201 @@
-.edge-profile/
+# ============================================================
+# Library Management System - Git Ignore
+# ============================================================
+
+# ------------------------------------------------------------
+# IntelliJ IDEA
+# ------------------------------------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IntelliJ workspace / user-specific files
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+
+# ------------------------------------------------------------
+# Java / Maven
+# ------------------------------------------------------------
+**/target/
+**/build/
+**/out/
+
+# Compiled Java files
+*.class
+
+# Packaged Java files
+*.jar
+*.war
+*.ear
+
+# ------------------------------------------------------------
+# JavaFX / Application build output
+# ------------------------------------------------------------
+dist/
+app/
+release/
+
+# jpackage generated files
+*.msi
+*.exe
+
+# ------------------------------------------------------------
+# Maven
+# ------------------------------------------------------------
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Keep Maven Wrapper scripts/config
+# mvnw
+# mvnw.cmd
+# .mvn/wrapper/maven-wrapper.properties
+
+# ------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------
+*.log
+logs/
+log/
+*.out
+
+# ------------------------------------------------------------
+# Operating System
+# ------------------------------------------------------------
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+# Windows shortcut / temporary files
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+
+# ------------------------------------------------------------
+# Temporary files
+# ------------------------------------------------------------
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.old
+
+# ------------------------------------------------------------
+# IDE / Editor
+# ------------------------------------------------------------
+
+# VS Code
+.vscode/
+.history/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ------------------------------------------------------------
+# Java annotation / compiler generated files
+# ------------------------------------------------------------
+generated/
+generated-sources/
+generated-test-sources/
+
+# ------------------------------------------------------------
+# Database / Local development
+# ------------------------------------------------------------
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# H2
+*.mv.db
+*.trace.db
+
+# ------------------------------------------------------------
+# Environment / Secrets
+# ------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# Local configuration
+application-local.properties
+application-local.yml
+application-local.yaml
+
+# ------------------------------------------------------------
+# Hibernate / SQL generated files
+# ------------------------------------------------------------
+hibernate.cfg.xml.bak
+
+# ------------------------------------------------------------
+# OS / IDE generated files
+# ------------------------------------------------------------
+*.pid
+*.pid.lock
+
+# ------------------------------------------------------------
+# Backup files
+# ------------------------------------------------------------
+*.backup
+*.backup.*
+*.save
+
+# ------------------------------------------------------------
+# Local user files
+# ------------------------------------------------------------
+local/
+private/
+
+# ------------------------------------------------------------
+# Reports / generated documentation
+# ------------------------------------------------------------
+reports/
+coverage/
+
+# ------------------------------------------------------------
+# Node.js (if frontend tooling is added later)
+# ------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ------------------------------------------------------------
+# Gradle (if used later)
+# ------------------------------------------------------------
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# ------------------------------------------------------------
+# Generated packaging/runtime files
+# ------------------------------------------------------------
+runtime/
