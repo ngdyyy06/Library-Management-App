@@ -1,27 +1,14 @@
 @echo off
 setlocal
 
-title Library Management System
+set "APP_EXE=%~dp0dist\LibraryManagement\LibraryManagement.exe"
 
-cd /d "%~dp0"
+if not exist "%APP_EXE%" (
+    echo LibraryManagement.exe was not found.
+    echo Rebuild the application package before starting it.
+    exit /b 1
+)
 
-echo ========================================
-echo      LIBRARY MANAGEMENT SYSTEM
-echo ========================================
-echo.
-echo Starting application...
-echo.
-
-call library-management-backend\mvnw.cmd ^
-    -f library-management-backend\pom.xml ^
-    org.codehaus.mojo:exec-maven-plugin:3.5.0:java ^
-    -Dexec.mainClass=com.library.management.Main ^
-    -Dexec.classpathScope=runtime
-
-echo.
-echo ========================================
-echo      APPLICATION CLOSED
-echo ========================================
-echo.
+start "" "%APP_EXE%"
 
 endlocal

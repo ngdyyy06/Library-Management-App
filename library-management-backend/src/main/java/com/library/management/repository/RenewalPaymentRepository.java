@@ -74,6 +74,14 @@ public class RenewalPaymentRepository {
     }
 
     public RenewalPayment save(RenewalPayment payment) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (payment.getId() == null) {
+                transactionSession.persist(payment);
+                return payment;
+            }
+            return transactionSession.merge(payment);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

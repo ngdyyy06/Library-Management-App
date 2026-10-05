@@ -18,6 +18,10 @@ public class CategoryRepository {
     }
 
     public Optional<Category> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Category.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Category category = session.get(Category.class, id);
             return Optional.ofNullable(category);
@@ -51,6 +55,18 @@ public class CategoryRepository {
     }
 
     public Optional<Category> findByNameIgnoreCase(String name) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Category category = transactionSession
+                    .createQuery(
+                            "FROM Category c WHERE LOWER(c.name) = LOWER(:name)",
+                            Category.class
+                    )
+                    .setParameter("name", name)
+                    .setMaxResults(1)
+                    .uniqueResult();
+            return Optional.ofNullable(category);
+        }
         try (Session session = sessionFactory.openSession()) {
             Category category = session
                     .createQuery(
@@ -69,6 +85,14 @@ public class CategoryRepository {
     }
 
     public Category save(Category category) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (category.getId() == null) {
+                transactionSession.persist(category);
+                return category;
+            }
+            return transactionSession.merge(category);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

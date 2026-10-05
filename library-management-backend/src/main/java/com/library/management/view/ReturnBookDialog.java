@@ -17,8 +17,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReturnBookDialog extends Dialog<Void> {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(ReturnBookDialog.class.getName());
 
     // =========================================================
     // CONSTANTS
@@ -329,8 +334,7 @@ public class ReturnBookDialog extends Dialog<Void> {
                 );
 
             } catch (Exception ex) {
-
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, "Unable to process book return", ex);
 
                 showError(
                         ex.getMessage() != null

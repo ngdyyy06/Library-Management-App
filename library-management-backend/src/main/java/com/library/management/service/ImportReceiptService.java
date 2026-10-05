@@ -4,6 +4,7 @@ import com.library.management.dto.CreateBookRequest;
 import com.library.management.dto.CreateImportReceiptRequest;
 import com.library.management.dto.ImportReceiptDetailRequest;
 import com.library.management.dto.NewImportBookRequest;
+import com.library.management.config.HibernateUtil;
 import com.library.management.entity.Book;
 import com.library.management.entity.ImportReceipt;
 import com.library.management.entity.ImportReceiptDetail;
@@ -53,6 +54,14 @@ public class ImportReceiptService {
     // =========================================================
 
     public ImportReceipt createImportReceipt(
+            CreateImportReceiptRequest request,
+            Long userId) {
+        return HibernateUtil.inTransaction(
+                () -> createImportReceiptInTransaction(request, userId)
+        );
+    }
+
+    private ImportReceipt createImportReceiptInTransaction(
             CreateImportReceiptRequest request,
             Long userId) {
 
@@ -286,6 +295,14 @@ public class ImportReceiptService {
     public ImportReceipt updateImportReceipt(
             Long id,
             CreateImportReceiptRequest request) {
+        return HibernateUtil.inTransaction(
+                () -> updateImportReceiptInTransaction(id, request)
+        );
+    }
+
+    private ImportReceipt updateImportReceiptInTransaction(
+            Long id,
+            CreateImportReceiptRequest request) {
 
         ImportReceipt receipt =
                 importReceiptRepository.findById(id)
@@ -482,6 +499,12 @@ public class ImportReceiptService {
 
     public ImportReceipt deactivateImportReceipt(
             Long id) {
+        return HibernateUtil.inTransaction(
+                () -> deactivateImportReceiptInTransaction(id)
+        );
+    }
+
+    private ImportReceipt deactivateImportReceiptInTransaction(Long id) {
 
         ImportReceipt receipt =
                 importReceiptRepository.findById(id)
@@ -551,6 +574,12 @@ public class ImportReceiptService {
 
     public ImportReceipt activateImportReceipt(
             Long id) {
+        return HibernateUtil.inTransaction(
+                () -> activateImportReceiptInTransaction(id)
+        );
+    }
+
+    private ImportReceipt activateImportReceiptInTransaction(Long id) {
 
         ImportReceipt receipt =
                 importReceiptRepository.findById(id)

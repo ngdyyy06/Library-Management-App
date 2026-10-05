@@ -22,6 +22,10 @@ public class BorrowingRepository {
     // =========================
 
     public Optional<Borrowing> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Borrowing.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Borrowing borrowing = session.get(Borrowing.class, id);
             return Optional.ofNullable(borrowing);
@@ -29,6 +33,12 @@ public class BorrowingRepository {
     }
 
     public List<Borrowing> findAll() {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery("FROM Borrowing", Borrowing.class)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
             return session
                     .createQuery("FROM Borrowing", Borrowing.class)
@@ -41,6 +51,16 @@ public class BorrowingRepository {
     // =========================
 
     public List<Borrowing> findByReaderId(Long readerId) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery(
+                            "FROM Borrowing b WHERE b.reader.id = :readerId",
+                            Borrowing.class
+                    )
+                    .setParameter("readerId", readerId)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
 
             return session
@@ -82,6 +102,14 @@ public class BorrowingRepository {
     // =========================
 
     public Borrowing save(Borrowing borrowing) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (borrowing.getId() == null) {
+                transactionSession.persist(borrowing);
+                return borrowing;
+            }
+            return transactionSession.merge(borrowing);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

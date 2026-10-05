@@ -8,8 +8,13 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookShelfAllocationRepository {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(BookShelfAllocationRepository.class.getName());
 
     private final SessionFactory sessionFactory;
 
@@ -66,6 +71,16 @@ public class BookShelfAllocationRepository {
     // =========================
 
     public List<BookShelfAllocation> findByBookId(Long bookId) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery(
+                            "FROM BookShelfAllocation a WHERE a.book.id = :bookId",
+                            BookShelfAllocation.class
+                    )
+                    .setParameter("bookId", bookId)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
 
             return session
@@ -89,6 +104,20 @@ public class BookShelfAllocationRepository {
             Long bookId,
             Long shelfId
     ) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            BookShelfAllocation allocation = transactionSession
+                    .createQuery(
+                            "FROM BookShelfAllocation a WHERE a.book.id = :bookId "
+                                    + "AND a.shelf.id = :shelfId",
+                            BookShelfAllocation.class
+                    )
+                    .setParameter("bookId", bookId)
+                    .setParameter("shelfId", shelfId)
+                    .setMaxResults(1)
+                    .uniqueResult();
+            return Optional.ofNullable(allocation);
+        }
         try (Session session = sessionFactory.openSession()) {
 
             BookShelfAllocation allocation = session
@@ -114,6 +143,19 @@ public class BookShelfAllocationRepository {
     // =========================================================
 
     public Integer getTotalQuantityByShelfId(Long shelfId) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Number result = transactionSession
+                    .createQuery(
+                            "SELECT COALESCE(SUM(a.quantity), 0) "
+                                    + "FROM BookShelfAllocation a "
+                                    + "WHERE a.shelf.id = :shelfId",
+                            Number.class
+                    )
+                    .setParameter("shelfId", shelfId)
+                    .getSingleResult();
+            return result != null ? result.intValue() : 0;
+        }
         try (Session session = sessionFactory.openSession()) {
 
             Number result = session
@@ -131,8 +173,15 @@ public class BookShelfAllocationRepository {
             return result != null ? result.intValue() : 0;
 
         } catch (Exception e) {
-            System.err.println("Error calculating total shelf quantity for shelf " + shelfId + ": " + e.getMessage());
-            return 0;
+            LOGGER.log(
+                    Level.SEVERE,
+                    "Unable to calculate shelf quantity for shelf " + shelfId,
+                    e
+            );
+            throw new RuntimeException(
+                    "Unable to calculate shelf quantity",
+                    e
+            );
         }
     }
 
@@ -143,6 +192,14 @@ public class BookShelfAllocationRepository {
     public BookShelfAllocation save(
             BookShelfAllocation allocation
     ) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (allocation.getId() == null) {
+                transactionSession.persist(allocation);
+                return allocation;
+            }
+            return transactionSession.merge(allocation);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {
@@ -221,6 +278,15 @@ public class BookShelfAllocationRepository {
     // =========================
 
     public void deleteById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            BookShelfAllocation allocation =
+                    transactionSession.get(BookShelfAllocation.class, id);
+            if (allocation != null) {
+                transactionSession.remove(allocation);
+            }
+            return;
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

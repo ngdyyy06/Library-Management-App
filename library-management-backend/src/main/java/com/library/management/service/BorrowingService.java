@@ -3,6 +3,7 @@ package com.library.management.service;
 import com.library.management.dto.CreateBorrowingRequest;
 import com.library.management.dto.RenewBorrowingRequest;
 import com.library.management.dto.ReturnBookRequest;
+import com.library.management.config.HibernateUtil;
 import com.library.management.entity.*;
 import com.library.management.exception.ResourceNotFoundException;
 import com.library.management.repository.*;
@@ -79,6 +80,14 @@ public class BorrowingService {
     // =========================================================
 
     public Borrowing renewBorrowing(
+            Long id,
+            RenewBorrowingRequest request) {
+        return HibernateUtil.inTransaction(
+                () -> renewBorrowingInTransaction(id, request)
+        );
+    }
+
+    private Borrowing renewBorrowingInTransaction(
             Long id,
             RenewBorrowingRequest request) {
 
@@ -161,6 +170,13 @@ public class BorrowingService {
     // =========================================================
 
     public Borrowing borrowBooks(
+            CreateBorrowingRequest request) {
+        return HibernateUtil.inTransaction(
+                () -> borrowBooksInTransaction(request)
+        );
+    }
+
+    private Borrowing borrowBooksInTransaction(
             CreateBorrowingRequest request) {
 
         Reader reader =
@@ -361,6 +377,14 @@ public class BorrowingService {
     // =========================================================
 
     public BorrowingDetail returnBook(
+            Long detailId,
+            ReturnBookRequest request) {
+        return HibernateUtil.inTransaction(
+                () -> returnBookInTransaction(detailId, request)
+        );
+    }
+
+    private BorrowingDetail returnBookInTransaction(
             Long detailId,
             ReturnBookRequest request) {
 

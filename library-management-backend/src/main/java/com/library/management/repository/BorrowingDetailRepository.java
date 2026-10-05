@@ -23,6 +23,12 @@ public class BorrowingDetailRepository {
     // =========================
 
     public Optional<BorrowingDetail> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(
+                    transactionSession.get(BorrowingDetail.class, id)
+            );
+        }
         try (Session session = sessionFactory.openSession()) {
             BorrowingDetail detail =
                     session.get(BorrowingDetail.class, id);
@@ -47,15 +53,38 @@ public class BorrowingDetailRepository {
     // =========================
 
     public long countUnreturnedBooksByReaderId(Long readerId) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Long result = transactionSession
+                    .createQuery(
+                            "SELECT COALESCE(SUM("
+                                    + "bd.quantity - bd.goodQuantity - "
+                                    + "bd.damagedQuantity - bd.lostQuantity"
+                                    + "), 0) "
+                                    + "FROM BorrowingDetail bd "
+                                    + "WHERE bd.borrowing.reader.id = :readerId ",
+                            Long.class
+                    )
+                    .setParameter("readerId", readerId)
+                    .getSingleResult();
+            return result != null ? result : 0L;
+        }
         try (Session session = sessionFactory.openSession()) {
 
             Long result = session
                     .createQuery(
                             """
-                            SELECT COALESCE(SUM(bd.quantity), 0)
+                            SELECT COALESCE(
+                                SUM(
+                                    bd.quantity
+                                    - bd.goodQuantity
+                                    - bd.damagedQuantity
+                                    - bd.lostQuantity
+                                ),
+                                0
+                            )
                             FROM BorrowingDetail bd
                             WHERE bd.borrowing.reader.id = :readerId
-                              AND bd.returnedAt IS NULL
                             """,
                             Long.class
                     )
@@ -71,15 +100,38 @@ public class BorrowingDetailRepository {
     // =========================
 
     public long countUnreturnedBooksByBorrowingId(Long borrowingId) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Long result = transactionSession
+                    .createQuery(
+                            "SELECT COALESCE(SUM("
+                                    + "bd.quantity - bd.goodQuantity - "
+                                    + "bd.damagedQuantity - bd.lostQuantity"
+                                    + "), 0) "
+                                    + "FROM BorrowingDetail bd "
+                                    + "WHERE bd.borrowing.id = :borrowingId ",
+                            Long.class
+                    )
+                    .setParameter("borrowingId", borrowingId)
+                    .getSingleResult();
+            return result != null ? result : 0L;
+        }
         try (Session session = sessionFactory.openSession()) {
 
             Long result = session
                     .createQuery(
                             """
-                            SELECT COALESCE(SUM(bd.quantity), 0)
+                            SELECT COALESCE(
+                                SUM(
+                                    bd.quantity
+                                    - bd.goodQuantity
+                                    - bd.damagedQuantity
+                                    - bd.lostQuantity
+                                ),
+                                0
+                            )
                             FROM BorrowingDetail bd
                             WHERE bd.borrowing.id = :borrowingId
-                              AND bd.returnedAt IS NULL
                             """,
                             Long.class
                     )
@@ -213,6 +265,14 @@ public class BorrowingDetailRepository {
     // =========================
 
     public BorrowingDetail save(BorrowingDetail detail) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (detail.getId() == null) {
+                transactionSession.persist(detail);
+                return detail;
+            }
+            return transactionSession.merge(detail);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

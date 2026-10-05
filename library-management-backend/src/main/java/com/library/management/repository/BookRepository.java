@@ -8,8 +8,13 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookRepository {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(BookRepository.class.getName());
 
     private final SessionFactory sessionFactory;
 
@@ -22,6 +27,10 @@ public class BookRepository {
     // =========================
 
     public Optional<Book> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Book.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Book book = session.get(Book.class, id);
             return Optional.ofNullable(book);
@@ -45,9 +54,8 @@ public class BookRepository {
                     )
                     .getResultList();
         } catch (Exception e) {
-            System.err.println("Error fetching books: " + e.getMessage());
-            e.printStackTrace();
-            return List.of();
+            LOGGER.log(Level.SEVERE, "Unable to fetch books", e);
+            throw new RuntimeException("Unable to fetch books", e);
         }
     }
 
@@ -56,6 +64,17 @@ public class BookRepository {
     // =========================
 
     public boolean existsByIsbn(String isbn) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Long count = transactionSession
+                    .createQuery(
+                            "SELECT COUNT(b) FROM Book b WHERE b.isbn = :isbn",
+                            Long.class
+                    )
+                    .setParameter("isbn", isbn)
+                    .getSingleResult();
+            return count > 0;
+        }
         try (Session session = sessionFactory.openSession()) {
 
             Long count = session
@@ -165,6 +184,14 @@ public class BookRepository {
     // =========================
 
     public Book save(Book book) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (book.getId() == null) {
+                transactionSession.persist(book);
+                return book;
+            }
+            return transactionSession.merge(book);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

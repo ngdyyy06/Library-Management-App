@@ -19,13 +19,19 @@ import com.library.management.entity.Role;
 import com.library.management.entity.Staff;
 import com.library.management.entity.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 public class HibernateUtil {
+
+    private static final ThreadLocal<Session> TRANSACTION_SESSION =
+            new ThreadLocal<>();
 
     private static final SessionFactory SESSION_FACTORY =
             buildSessionFactory();
@@ -95,6 +101,40 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         return SESSION_FACTORY;
+    }
+
+    /**
+     * Runs a unit of work in one Hibernate session and one database transaction.
+     * Repository methods may obtain this session through getTransactionSession()
+     * instead of opening and committing their own transaction.
+     */
+    public static <T> T inTransaction(Supplier<T> work) {
+
+        if (TRANSACTION_SESSION.get() != null) {
+            return work.get();
+        }
+
+        try (Session session = SESSION_FACTORY.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            TRANSACTION_SESSION.set(session);
+
+            try {
+                T result = work.get();
+                transaction.commit();
+                return result;
+            } catch (RuntimeException | Error e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw e;
+            } finally {
+                TRANSACTION_SESSION.remove();
+            }
+        }
+    }
+
+    public static Session getTransactionSession() {
+        return TRANSACTION_SESSION.get();
     }
 
     public static void shutdown() {

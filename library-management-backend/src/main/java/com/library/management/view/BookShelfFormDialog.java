@@ -10,8 +10,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookShelfFormDialog extends Dialog<BookShelf> {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(BookShelfFormDialog.class.getName());
 
     public BookShelfFormDialog(BookShelf existingShelf, List<Category> allCategories) {
         boolean isEdit = existingShelf != null;
@@ -69,7 +74,11 @@ public class BookShelfFormDialog extends Dialog<BookShelf> {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Warning: Could not pre-select categories due to session: " + e.getMessage());
+                LOGGER.log(
+                        Level.WARNING,
+                        "Unable to pre-select shelf categories",
+                        e
+                );
             }
         }
 

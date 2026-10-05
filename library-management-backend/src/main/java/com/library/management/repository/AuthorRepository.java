@@ -18,6 +18,10 @@ public class AuthorRepository {
     }
 
     public Optional<Author> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Author.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Author author = session.get(Author.class, id);
             return Optional.ofNullable(author);
@@ -33,6 +37,18 @@ public class AuthorRepository {
     }
 
     public Optional<Author> findByNameIgnoreCase(String name) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            Author author = transactionSession
+                    .createQuery(
+                            "FROM Author a WHERE LOWER(a.name) = LOWER(:name)",
+                            Author.class
+                    )
+                    .setParameter("name", name)
+                    .setMaxResults(1)
+                    .uniqueResult();
+            return Optional.ofNullable(author);
+        }
         try (Session session = sessionFactory.openSession()) {
 
             Author author = session
@@ -53,6 +69,14 @@ public class AuthorRepository {
     }
 
     public Author save(Author author) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (author.getId() == null) {
+                transactionSession.persist(author);
+                return author;
+            }
+            return transactionSession.merge(author);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

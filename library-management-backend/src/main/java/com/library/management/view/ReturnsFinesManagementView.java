@@ -18,8 +18,13 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReturnsFinesManagementView {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(ReturnsFinesManagementView.class.getName());
 
     private final BorrowingService borrowingService;
 
@@ -240,13 +245,12 @@ public class ReturnsFinesManagementView {
 
         } catch (Exception ex) {
 
-            // In toàn bộ lỗi ra Console
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Unable to start return process", ex);
 
             Alert alert = new Alert(
                     Alert.AlertType.ERROR,
                     "Failed to initiate return process:\n\n"
-                            + ex,
+                            + "Please try again or contact an administrator.",
                     ButtonType.OK
             );
 

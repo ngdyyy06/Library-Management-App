@@ -47,6 +47,14 @@ public class ReturnHistoryRepository {
     }
 
     public ReturnHistory save(ReturnHistory history) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (history.getId() == null) {
+                transactionSession.persist(history);
+                return history;
+            }
+            return transactionSession.merge(history);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

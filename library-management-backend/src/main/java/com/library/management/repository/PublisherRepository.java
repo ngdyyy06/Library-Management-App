@@ -18,6 +18,10 @@ public class PublisherRepository {
     }
 
     public Optional<Publisher> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Publisher.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Publisher publisher = session.get(Publisher.class, id);
             return Optional.ofNullable(publisher);

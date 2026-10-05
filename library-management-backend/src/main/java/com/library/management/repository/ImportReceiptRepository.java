@@ -18,6 +18,12 @@ public class ImportReceiptRepository {
     }
 
     public Optional<ImportReceipt> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(
+                    transactionSession.get(ImportReceipt.class, id)
+            );
+        }
         try (Session session = sessionFactory.openSession()) {
             ImportReceipt receipt = session.get(ImportReceipt.class, id);
             return Optional.ofNullable(receipt);
@@ -25,6 +31,12 @@ public class ImportReceiptRepository {
     }
 
     public List<ImportReceipt> findAll() {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery("FROM ImportReceipt", ImportReceipt.class)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
             return session
                     .createQuery("FROM ImportReceipt", ImportReceipt.class)
@@ -69,6 +81,14 @@ public class ImportReceiptRepository {
     }
 
     public ImportReceipt save(ImportReceipt receipt) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (receipt.getId() == null) {
+                transactionSession.persist(receipt);
+                return receipt;
+            }
+            return transactionSession.merge(receipt);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

@@ -18,6 +18,10 @@ public class ReaderRepository {
     }
 
     public Optional<Reader> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(Reader.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             Reader reader = session.get(Reader.class, id);
             return Optional.ofNullable(reader);

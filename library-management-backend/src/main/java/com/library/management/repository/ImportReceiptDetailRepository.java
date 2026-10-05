@@ -40,6 +40,17 @@ public class ImportReceiptDetailRepository {
     public List<ImportReceiptDetail> findByImportReceiptId(
             Long importReceiptId
     ) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery(
+                            "FROM ImportReceiptDetail d "
+                                    + "WHERE d.importReceipt.id = :importReceiptId",
+                            ImportReceiptDetail.class
+                    )
+                    .setParameter("importReceiptId", importReceiptId)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
             return session
                     .createQuery(
@@ -78,6 +89,14 @@ public class ImportReceiptDetailRepository {
     }
 
     public ImportReceiptDetail save(ImportReceiptDetail detail) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            if (detail.getId() == null) {
+                transactionSession.persist(detail);
+                return detail;
+            }
+            return transactionSession.merge(detail);
+        }
         Transaction transaction = null;
 
         try (Session session = sessionFactory.openSession()) {

@@ -8,8 +8,13 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BookShelfRepository {
+
+    private static final Logger LOGGER =
+            Logger.getLogger(BookShelfRepository.class.getName());
 
     private final SessionFactory sessionFactory;
 
@@ -37,8 +42,8 @@ public class BookShelfRepository {
 
             return Optional.ofNullable(shelf);
         } catch (Exception e) {
-            System.err.println("Error fetching shelf by id: " + e.getMessage());
-            return Optional.empty();
+            LOGGER.log(Level.SEVERE, "Unable to fetch shelf " + id, e);
+            throw new RuntimeException("Unable to fetch shelf", e);
         }
     }
 
@@ -104,6 +109,18 @@ public class BookShelfRepository {
             Long categoryId,
             String status
     ) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return transactionSession
+                    .createQuery(
+                            "SELECT DISTINCT s FROM BookShelf s JOIN s.categories c "
+                                    + "WHERE c.id = :categoryId AND s.status = :status",
+                            BookShelf.class
+                    )
+                    .setParameter("categoryId", categoryId)
+                    .setParameter("status", status)
+                    .getResultList();
+        }
         try (Session session = sessionFactory.openSession()) {
 
             return session

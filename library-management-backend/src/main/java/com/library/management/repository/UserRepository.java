@@ -18,6 +18,10 @@ public class UserRepository {
     }
 
     public Optional<User> findById(Long id) {
+        Session transactionSession = HibernateUtil.getTransactionSession();
+        if (transactionSession != null) {
+            return Optional.ofNullable(transactionSession.get(User.class, id));
+        }
         try (Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
             return Optional.ofNullable(user);
