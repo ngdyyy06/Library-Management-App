@@ -2943,9 +2943,66 @@ public class ImportReceiptManagementView {
 
         alert.setTitle(title);
 
-        alert.setHeaderText(null);
+        DialogPane dialogPane =
+                alert.getDialogPane();
 
-        alert.setContentText(message);
+        dialogPane.getStylesheets().clear();
+
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/css/dashboard.css")
+                        .toExternalForm()
+        );
+
+        dialogPane.getStyleClass()
+                .add("atelier-error-dialog");
+
+        Label headerLabel =
+                new Label(title);
+
+        headerLabel.getStyleClass()
+                .add("error-dialog-header");
+
+        Label contentLabel =
+                new Label(message);
+
+        contentLabel.setWrapText(true);
+
+        contentLabel.getStyleClass()
+                .add("error-dialog-content");
+
+        VBox contentBox =
+                new VBox(
+                        10,
+                        headerLabel,
+                        contentLabel
+                );
+
+        contentBox.setPadding(
+                new Insets(5)
+        );
+
+        contentBox.getStyleClass()
+                .add("error-dialog-content-box");
+
+        dialogPane.setContent(contentBox);
+
+        ButtonType okType =
+                new ButtonType(
+                        "OK",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        dialogPane.getButtonTypes().clear();
+
+        dialogPane.getButtonTypes()
+                .add(okType);
+
+        Button okButton =
+                (Button) dialogPane.lookupButton(okType);
+
+        okButton.getStyleClass()
+                .add("error-dialog-ok-button");
 
         alert.showAndWait();
     }

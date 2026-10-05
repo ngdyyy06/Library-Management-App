@@ -40,8 +40,13 @@ public class UserFormDialog extends Dialog<CreateUserRequest> {
         emailField.setPrefWidth(300);
 
         ComboBox<Role> roleCombo = new ComboBox<>();
-        roleCombo.getItems().addAll(availableRoles);
+
+        availableRoles.stream()
+                .filter(role -> !"READER".equalsIgnoreCase(role.getName()))
+                .forEach(roleCombo.getItems()::add);
+
         roleCombo.setPrefWidth(300);
+
         roleCombo.setConverter(new StringConverter<>() {
             @Override
             public String toString(Role r) {

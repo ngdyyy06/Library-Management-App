@@ -9,24 +9,7 @@ echo ========================================
 echo      LIBRARY MANAGEMENT SYSTEM
 echo ========================================
 echo.
-
-echo [1/2] Preparing application...
-echo.
-
-call library-management-backend\mvnw.cmd -f library-management-backend\pom.xml compile -q
-
-if errorlevel 1 (
-    echo.
-    echo ERROR: Backend compilation failed.
-    echo.
-    pause
-    exit /b 1
-)
-
-echo Backend compiled successfully.
-echo.
-
-echo [2/2] Starting application...
+echo Starting application...
 echo.
 
 call library-management-backend\mvnw.cmd ^

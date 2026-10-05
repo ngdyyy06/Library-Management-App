@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -27,18 +28,29 @@ public class LoginView {
 
     public void show(Stage stage) {
 
+        stage.getIcons().clear();
+
+        stage.getIcons().add(
+                new Image(
+                        getClass()
+                                .getResourceAsStream(
+                                        "/images/LibraryManagement.ico"
+                                )
+                )
+        );
+
         // =====================================================
         // LEFT - BRANDING PANEL
         // =====================================================
 
-        Label monogramText = new Label("A");
+        Label monogramText = new Label("D");
         monogramText.getStyleClass().add("logo-monogram");
 
         VBox logoSeal = new VBox(monogramText);
         logoSeal.getStyleClass().add("logo-seal");
         logoSeal.setAlignment(Pos.CENTER);
 
-        Label brandTitle = new Label("ATELIER");
+        Label brandTitle = new Label("LIBRARY MANAGER");
         brandTitle.getStyleClass().add("brand-title");
 
         Label brandSubtitle =
@@ -237,9 +249,7 @@ public class LoginView {
             } catch (Exception e) {
 
                 messageLabel.setText(
-                        e.getMessage() != null
-                                ? e.getMessage()
-                                : "Invalid credentials."
+                        "Invalid username or password"
                 );
             }
         };

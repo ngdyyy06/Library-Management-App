@@ -258,10 +258,66 @@ public class PublisherManagementView {
     }
 
     private void showError(String message) {
+
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Publisher Operation Failed");
-        alert.setContentText(message);
+
+        alert.setTitle("Atelier • Notice");
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        dialogPane.getStylesheets().clear();
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/css/dashboard.css")
+                        .toExternalForm()
+        );
+
+        dialogPane.getStyleClass().add("atelier-error-dialog");
+
+        Label headerLabel =
+                new Label("Operation Unsuccessful");
+
+        headerLabel.getStyleClass()
+                .add("error-dialog-header");
+
+        Label contentLabel =
+                new Label(message);
+
+        contentLabel.setWrapText(true);
+        contentLabel.getStyleClass()
+                .add("error-dialog-content");
+
+        VBox contentBox =
+                new VBox(
+                        10,
+                        headerLabel,
+                        contentLabel
+                );
+
+        contentBox.setPadding(
+                new Insets(5)
+        );
+
+        contentBox.getStyleClass()
+                .add("error-dialog-content-box");
+
+        dialogPane.setContent(contentBox);
+
+        ButtonType okType =
+                new ButtonType(
+                        "OK",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getButtonTypes().add(okType);
+
+        Button okButton =
+                (Button) dialogPane.lookupButton(okType);
+
+        okButton.getStyleClass()
+                .add("error-dialog-ok-button");
+
         alert.showAndWait();
     }
 

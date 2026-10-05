@@ -265,27 +265,190 @@ public class CategoryManagementView {
     }
 
     private void handleDeleteCategory(Category cat) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirm Deletion");
-        confirm.setHeaderText("Remove Archival Classification");
-        confirm.setContentText("Are you sure you wish to delete the category: " + cat.getName() + "?");
 
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirm.setTitle("Delete Classification");
+
+        DialogPane dialogPane = confirm.getDialogPane();
+
+        // Load dashboard CSS trực tiếp cho Dialog
+        dialogPane.getStylesheets().clear();
+
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/css/dashboard.css")
+                        .toExternalForm()
+        );
+
+        // Custom CSS class
+        dialogPane.getStyleClass().add(
+                "atelier-delete-dialog"
+        );
+
+        // Header
+        Label headerLabel =
+                new Label("Remove Archival Classification");
+
+        headerLabel.getStyleClass().add(
+                "delete-dialog-header"
+        );
+
+        // Content
+        Label contentLabel =
+                new Label(
+                        "Are you sure you wish to delete the category:\n\n"
+                                + "\"" + cat.getName() + "\""
+                                + "\n\n"
+                                + "This action cannot be undone."
+                );
+
+        contentLabel.setWrapText(true);
+
+        contentLabel.getStyleClass().add(
+                "delete-dialog-content"
+        );
+
+        VBox contentBox =
+                new VBox(
+                        10,
+                        headerLabel,
+                        contentLabel
+                );
+
+        contentBox.setPadding(
+                new Insets(5, 5, 5, 5)
+        );
+
+        contentBox.getStyleClass().add(
+                "delete-dialog-content-box"
+        );
+
+        dialogPane.setContent(contentBox);
+
+        // =====================================================
+        // BUTTONS
+        // =====================================================
+
+        ButtonType deleteType =
+                new ButtonType(
+                        "DELETE",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        ButtonType cancelType =
+                new ButtonType(
+                        "CANCEL",
+                        ButtonBar.ButtonData.CANCEL_CLOSE
+                );
+
+        dialogPane.getButtonTypes().clear();
+
+        dialogPane.getButtonTypes().addAll(
+                cancelType,
+                deleteType
+        );
+
+        Button deleteButton =
+                (Button) dialogPane.lookupButton(deleteType);
+
+        Button cancelButton =
+                (Button) dialogPane.lookupButton(cancelType);
+
+        deleteButton.getStyleClass().add(
+                "delete-dialog-delete-button"
+        );
+
+        cancelButton.getStyleClass().add(
+                "delete-dialog-cancel-button"
+        );
+
+        Optional<ButtonType> result =
+                confirm.showAndWait();
+
+        if (result.isPresent()
+                && result.get() == deleteType) {
+
             try {
-                categoryRepository.deleteById(cat.getId());
+
+                categoryRepository.deleteById(
+                        cat.getId()
+                );
+
                 reloadData();
+
             } catch (Exception e) {
-                showError("Cannot delete category (it may still be bound to catalog volumes): " + e.getMessage());
+
+                showError(
+                        "Cannot delete category "
+                                + "(it may still be bound to catalog volumes): "
+                                + e.getMessage()
+                );
             }
         }
     }
 
     private void showError(String message) {
+
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Classification Operation Failed");
-        alert.setContentText(message);
+
+        alert.setTitle("Atelier • Notice");
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        dialogPane.getStylesheets().clear();
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/css/dashboard.css")
+                        .toExternalForm()
+        );
+
+        dialogPane.getStyleClass().add("atelier-error-dialog");
+
+        Label headerLabel =
+                new Label("Operation Unsuccessful");
+
+        headerLabel.getStyleClass()
+                .add("error-dialog-header");
+
+        Label contentLabel =
+                new Label(message);
+
+        contentLabel.setWrapText(true);
+        contentLabel.getStyleClass()
+                .add("error-dialog-content");
+
+        VBox contentBox =
+                new VBox(
+                        10,
+                        headerLabel,
+                        contentLabel
+                );
+
+        contentBox.setPadding(
+                new Insets(5)
+        );
+
+        contentBox.getStyleClass()
+                .add("error-dialog-content-box");
+
+        dialogPane.setContent(contentBox);
+
+        ButtonType okType =
+                new ButtonType(
+                        "OK",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getButtonTypes().add(okType);
+
+        Button okButton =
+                (Button) dialogPane.lookupButton(okType);
+
+        okButton.getStyleClass()
+                .add("error-dialog-ok-button");
+
         alert.showAndWait();
     }
 

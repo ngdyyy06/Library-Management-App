@@ -225,12 +225,35 @@ public class ReturnsFinesManagementView {
 
     private void handleReturnBooks(Borrowing borrowing) {
         try {
-            List<BorrowingDetail> details = borrowingService.getBorrowingDetails(borrowing.getId());
-            ReturnBookDialog dialog = new ReturnBookDialog(borrowing, details, borrowingService);
+            List<BorrowingDetail> details =
+                    borrowingService.getBorrowingDetails(borrowing.getId());
+
+            ReturnBookDialog dialog =
+                    new ReturnBookDialog(
+                            borrowing,
+                            details,
+                            borrowingService
+                    );
+
             dialog.showAndWait();
             reloadData();
-        } catch (Exception e) {
-            showError("Failed to initiate return process: " + e.getMessage());
+
+        } catch (Exception ex) {
+
+            // In toàn bộ lỗi ra Console
+            ex.printStackTrace();
+
+            Alert alert = new Alert(
+                    Alert.AlertType.ERROR,
+                    "Failed to initiate return process:\n\n"
+                            + ex,
+                    ButtonType.OK
+            );
+
+            alert.setTitle("Circulation Operation Failed");
+            alert.setHeaderText("Return process error");
+
+            alert.showAndWait();
         }
     }
 
@@ -248,10 +271,66 @@ public class ReturnsFinesManagementView {
     }
 
     private void showError(String message) {
+
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Circulation Operation Failed");
-        alert.setContentText(message);
+
+        alert.setTitle("Atelier • Notice");
+
+        DialogPane dialogPane = alert.getDialogPane();
+
+        dialogPane.getStylesheets().clear();
+        dialogPane.getStylesheets().add(
+                getClass()
+                        .getResource("/css/dashboard.css")
+                        .toExternalForm()
+        );
+
+        dialogPane.getStyleClass().add("atelier-error-dialog");
+
+        Label headerLabel =
+                new Label("Operation Unsuccessful");
+
+        headerLabel.getStyleClass()
+                .add("error-dialog-header");
+
+        Label contentLabel =
+                new Label(message);
+
+        contentLabel.setWrapText(true);
+        contentLabel.getStyleClass()
+                .add("error-dialog-content");
+
+        VBox contentBox =
+                new VBox(
+                        10,
+                        headerLabel,
+                        contentLabel
+                );
+
+        contentBox.setPadding(
+                new Insets(5)
+        );
+
+        contentBox.getStyleClass()
+                .add("error-dialog-content-box");
+
+        dialogPane.setContent(contentBox);
+
+        ButtonType okType =
+                new ButtonType(
+                        "OK",
+                        ButtonBar.ButtonData.OK_DONE
+                );
+
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getButtonTypes().add(okType);
+
+        Button okButton =
+                (Button) dialogPane.lookupButton(okType);
+
+        okButton.getStyleClass()
+                .add("error-dialog-ok-button");
+
         alert.showAndWait();
     }
 

@@ -82,8 +82,14 @@ public class BookRepository {
                             """
                             SELECT DISTINCT b
                             FROM Book b
-                            JOIN b.authors a
-                            WHERE a.id = :authorId
+                            JOIN FETCH b.authors
+                            WHERE EXISTS (
+                                SELECT 1
+                                FROM Book b2
+                                JOIN b2.authors a
+                                WHERE b2.id = b.id
+                                AND a.id = :authorId
+                            )
                             """,
                             Book.class
                     )
@@ -100,8 +106,9 @@ public class BookRepository {
                             """
                             SELECT DISTINCT b
                             FROM Book b
-                            JOIN b.authors a
-                            WHERE a.id = :authorId
+                            JOIN FETCH b.authors
+                            JOIN b.authors targetAuthor
+                            WHERE targetAuthor.id = :authorId
                             """,
                             Book.class
                     )

@@ -232,7 +232,7 @@ public class DashboardView {
         );
 
         Label logo =
-                new Label("ATELIER");
+                new Label("LIBRARY MANAGER");
 
         logo.getStyleClass().add(
                 "dashboard-logo-text"
