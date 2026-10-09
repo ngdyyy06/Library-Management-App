@@ -36,6 +36,23 @@ public class CategoryRepository {
         }
     }
 
+    public List<Category> findByBookId(Long bookId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            """
+                            SELECT c
+                            FROM Book b
+                            JOIN b.categories c
+                            WHERE b.id = :bookId
+                            ORDER BY c.name
+                            """,
+                            Category.class
+                    )
+                    .setParameter("bookId", bookId)
+                    .getResultList();
+        }
+    }
+
     public boolean existsByNameIgnoreCase(String name) {
         try (Session session = sessionFactory.openSession()) {
             Long count = session

@@ -5,6 +5,7 @@ import com.library.management.entity.ImportReceiptDetail;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import com.library.management.entity.Category;
 
 import java.util.List;
 import java.util.Optional;
@@ -166,6 +167,25 @@ public class ImportReceiptDetailRepository {
                             Long.class
                     )
                     .getSingleResult();
+        }
+    }
+
+    public List<Category> findCategoriesUsedInCompletedImports() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                            """
+                            SELECT DISTINCT c
+                            FROM ImportReceiptDetail d
+                            JOIN d.importReceipt r
+                            JOIN d.book b
+                            JOIN b.categories c
+                            WHERE r.status = :status
+                            ORDER BY c.name
+                            """,
+                            Category.class
+                    )
+                    .setParameter("status", "COMPLETED")
+                    .getResultList();
         }
     }
 }

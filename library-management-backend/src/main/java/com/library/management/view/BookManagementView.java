@@ -4,6 +4,7 @@ import com.library.management.entity.Author;
 import com.library.management.entity.Book;
 import com.library.management.entity.Category;
 import com.library.management.repository.CategoryRepository;
+import com.library.management.repository.ImportReceiptDetailRepository;
 import com.library.management.repository.PublisherRepository;
 import com.library.management.service.BookService;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +18,7 @@ import javafx.scene.layout.*;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ public class BookManagementView {
     private final BookService bookService;
     private final CategoryRepository categoryRepository;
     private final PublisherRepository publisherRepository;
+    private final ImportReceiptDetailRepository importReceiptDetailRepository;
 
     private TableView<Book> tableView;
     private ObservableList<Book> masterData;
@@ -33,10 +36,11 @@ public class BookManagementView {
     public BookManagementView(
             BookService bookService,
             CategoryRepository categoryRepository,
-            PublisherRepository publisherRepository) {
+            PublisherRepository publisherRepository, ImportReceiptDetailRepository importReceiptDetailRepository) {
         this.bookService = bookService;
         this.categoryRepository = categoryRepository;
         this.publisherRepository = publisherRepository;
+        this.importReceiptDetailRepository = importReceiptDetailRepository;
     }
 
     public Pane getView() {
@@ -250,12 +254,18 @@ public class BookManagementView {
     }
 
     private void handleEditBook(Book book) {
+        List<Category> bookCategories =
+                categoryRepository.findByBookId(book.getId());
+
         BookFormDialog dialog = new BookFormDialog(
                 book,
-                categoryRepository.findAll(),
+                bookCategories,
                 publisherRepository.findAll()
         );
-        Optional<com.library.management.dto.CreateBookRequest> result = dialog.showAndWait();
+
+        Optional<com.library.management.dto.CreateBookRequest> result =
+                dialog.showAndWait();
+
         result.ifPresent(req -> {
             try {
                 bookService.updateBook(book.getId(), req);

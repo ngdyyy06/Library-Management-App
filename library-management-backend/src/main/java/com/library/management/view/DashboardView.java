@@ -505,7 +505,8 @@ public class DashboardView {
                 new BookManagementView(
                         bookService,
                         categoryRepository,
-                        publisherRepository
+                        publisherRepository,
+                        importReceiptDetailRepository
                 );
 
         CategoryManagementView categoryManagementView =
